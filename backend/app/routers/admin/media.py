@@ -141,7 +141,7 @@ def delete_media(media_id: int, db: Session = Depends(get_db), current_user: Use
     if project_uses_media or post_uses_media or site_uses_media:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Media is in use; replace its project, post, or homepage image before deleting it",
+            detail="Media is used by a project, blog post, or homepage photo; replace it before deleting it",
         )
     storage_key = media.storage_key
     record_admin_action(db, current_user, "delete", "media", media.id)
