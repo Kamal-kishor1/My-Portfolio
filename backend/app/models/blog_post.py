@@ -1,0 +1,29 @@
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey, func
+from sqlalchemy.orm import relationship
+
+from app.core.database import Base
+from app.services.object_storage import resolve_media_url
+
+
+class BlogPost(Base):
+    __tablename__ = "blog_posts"
+
+    id = Column(Integer, primary_key=True)
+    title = Column(String, nullable=False)
+    slug = Column(String, unique=True, nullable=False, index=True)
+    content = Column(Text, nullable=False)
+    cover_image_id = Column(Integer, ForeignKey("media.id"), nullable=True)
+    published = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    cover_image = relationship("Media", foreign_keys=[cover_image_id], lazy="joined")
+
+    @property
+    def cover_image_url(self) -> str | None:
+        return (
+            resolve_media_url(self.cover_image.url, self.cover_image.storage_key)
+            if self.cover_image
+            else None
+        )
+

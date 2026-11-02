@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: portfolio-api
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    autoDeployTrigger: checksPass
+    healthCheckPath: /ready
+    preDeployCommand: alembic upgrade head
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_UNPOOLED
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_ENDPOINT_URL_S3
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: NEON_STORAGE_BUCKET
+        value: uploads
+      - key: LOGIN_RATE_LIMIT
+        value: 5/minute
+      - key: CONTACT_RATE_LIMIT
+        value: 5/hour
+      - key: ANALYTICS_RATE_LIMIT
+        value: 60/minute

@@ -1,0 +1,68 @@
+{
+  "projects": [
+    {
+      "title": "Multi-Tenant Learning Management System",
+      "slug": "multi-tenant-learning-platform",
+      "summary": "Contributed to a multi-tenant learning platform, building FastAPI and PostgreSQL APIs, React interfaces, and containerized workflows.",
+      "description": "At Telite Systems, I have contributed to the development of a multi-tenant Learning Management System from its early stages. My work includes developing REST APIs with FastAPI and PostgreSQL, implementing responsive React components, maintaining Docker-based environments, troubleshooting application and CI/CD issues, and supporting AWS EC2 deployments.",
+      "tech_stack": ["FastAPI", "React", "PostgreSQL", "Docker", "GitHub Actions", "AWS EC2"],
+      "repo_url": "https://github.com/kamal-telite/telite-lms/tree/Lokesh-Dev",
+      "live_url": null,
+      "published": true,
+      "featured": true
+    },
+    {
+      "title": "Self-Healing Mesh Radio Network",
+      "slug": "self-healing-mesh-radio-network",
+      "summary": "A solar-powered LoRa mesh network designed to keep emergency communications working when individual nodes fail.",
+      "description": "Engineered a decentralized mesh network using ESP32 microcontrollers and LoRa. Implemented Dijkstra-based routing for automatic fault recovery, AES-128 encryption for GPS and environmental telemetry, and a web dashboard for network status and emergency alerts.",
+      "tech_stack": ["ESP32", "LoRa", "Arduino", "Dijkstra Routing", "AES-128"],
+      "repo_url": null,
+      "live_url": null,
+      "published": true,
+      "featured": false
+    },
+    {
+      "title": "RoboVision: Autonomous Obstacle Detection",
+      "slug": "robovision-obstacle-detection",
+      "summary": "An autonomous robot combining real-time object detection with ultrasonic sensing and emergency braking.",
+      "description": "Developed a dual-compute autonomous vehicle using YOLOv8n and OpenCV to detect 12 obstacle classes. Added a 10 Hz ultrasonic sensing system with emergency braking within 18 cm and servo-driven camera panning.",
+      "tech_stack": ["Python", "YOLOv8n", "OpenCV", "Computer Vision", "Robotics"],
+      "repo_url": null,
+      "live_url": null,
+      "published": true,
+      "featured": false
+    },
+    {
+      "title": "AI & Machine Learning Models",
+      "slug": "ai-machine-learning-models",
+      "summary": "A collection of machine learning and NLP experiments, including a heart disease classifier served through a Flask application.",
+      "description": "Built predictive models across multiple domains using Scikit-learn and TF-IDF vectorization. Deployed a heart disease classification model in a Flask web application for interactive predictions.",
+      "tech_stack": ["Python", "Scikit-learn", "TF-IDF", "NLP", "Flask"],
+      "repo_url": null,
+      "live_url": null,
+      "published": true,
+      "featured": false
+    }
+  ],
+  "blog_posts": [
+    {
+      "title": "Building Across Backend, AI, and Connected Systems",
+      "slug": "building-across-backend-ai-connected-systems",
+      "content": "# Building Across Backend, AI, and Connected Systems\n\nMy work spans backend engineering, applied machine learning, computer vision, and embedded systems. The common thread is turning technical ideas into systems people can use.\n\n## Building dependable software\n\nAt Telite Systems, I contribute to a multi-tenant Learning Management System. I work across FastAPI and PostgreSQL services, React interfaces, Docker-based environments, and GitHub Actions workflows. Working across those layers has taught me to follow a feature beyond the code: through integration, troubleshooting, and deployment.\n\n## Exploring intelligent applications\n\nMy machine learning and computer vision projects include a Scikit-learn model served through Flask and a YOLOv8n/OpenCV obstacle detection robot. These projects have given me practical experience connecting model output to an application or physical system.\n\n## Designing for unreliable environments\n\nFor a disaster-management mesh network, I explored ESP32 and LoRa communication, self-healing routing, encrypted telemetry, and a dashboard for network visibility. The project brought software, electronics, and resilience concerns together.\n\nI am especially interested in backend and software engineering roles where I can keep learning, contribute across the stack, and build reliable products with a thoughtful team.",
+      "published": true
+    }
+  ],
+  "resume_entries": [
+    {"type":"experience","title":"Software Engineering Intern","organization":"Telite Systems","description":"Contribute to a multi-tenant Learning Management System from its early development stages. Develop FastAPI and PostgreSQL REST APIs and responsive React components; maintain Docker environments; troubleshoot production issues and GitHub Actions workflows; support AWS EC2 deployments, release updates, and server maintenance; collaborate through GitHub and code reviews.","start_date":"2026-02-01","end_date":null,"sort_order":1},
+    {"type":"education","title":"Electronics and Communication Engineering","organization":null,"description":"Graduate in Electronics and Communication Engineering.","start_date":null,"end_date":null,"sort_order":1},
+    {"type":"skill","title":"Backend Engineering","organization":null,"description":"Python · FastAPI · Django · REST APIs · SQLAlchemy · PostgreSQL","start_date":null,"end_date":null,"sort_order":1},
+    {"type":"skill","title":"Frontend Development","organization":null,"description":"React · JavaScript · HTML5 · CSS3 · Tailwind CSS","start_date":null,"end_date":null,"sort_order":2},
+    {"type":"skill","title":"AI, Machine Learning & Computer Vision","organization":null,"description":"TensorFlow · Scikit-learn · OpenCV · YOLOv8 · NumPy · Pandas · NLP","start_date":null,"end_date":null,"sort_order":3},
+    {"type":"skill","title":"DevOps & Cloud","organization":null,"description":"Docker · Git · GitHub · GitHub Actions · AWS EC2","start_date":null,"end_date":null,"sort_order":4},
+    {"type":"skill","title":"Automation & Embedded Systems","organization":null,"description":"n8n · Arduino · Raspberry Pi · ESP32 · LoRa","start_date":null,"end_date":null,"sort_order":5},
+    {"type":"skill","title":"Programming Languages","organization":null,"description":"Python · C","start_date":null,"end_date":null,"sort_order":6},
+    {"type":"skill","title":"Certifications & Training","organization":null,"description":"Hands-On Python ML (Udemy) · Learn ML in 21 Days (Udemy) · AI Chatbot Bootcamp (YHills) · IoT using Arduino & Raspberry Pi · Facial Recognition with Python (Udemy) · Introduction to NLP (Analytics Vidhya)","start_date":null,"end_date":null,"sort_order":7},
+    {"type":"skill","title":"Leadership & Activities","organization":null,"description":"AV/VR Mentor for a 40-hour, five-day workshop · Participant, Smart India Hackathon Internal Hackathon 2025 and 2026","start_date":null,"end_date":null,"sort_order":8}
+  ]
+}

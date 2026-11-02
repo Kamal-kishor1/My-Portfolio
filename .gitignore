@@ -1,0 +1,95 @@
+# ── Dependencies ──
+node_modules/
+venv/
+.venv/
+
+# ── Builds ──
+.next/
+dist/
+build/
+out/
+coverage/
+
+# ── Logs ──
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# ── Environment ──
+.env
+.env.*
+!.env.example
+
+# ── Vercel ──
+.vercel/
+
+# ── Local Tooling ──
+.vscode/
+.idea/
+
+# ── OS Artifacts ──
+.DS_Store
+Thumbs.db
+*.stackdump
+
+# ── Test Outputs ──
+playwright-report/
+test-results/
+
+# ── Cache ──
+.cache/
+.parcel-cache/
+.turbo/
+
+# ── Python ──
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# ── Docker ──
+docker-data/
+
+# ── Temp ──
+tmp/
+temp/
+
+# ── Generated ──
+*.generated.*
+*.tsbuildinfo
+
+# ── Unused Archive ──
+unused/
+.neon
+
+# ── Local agent configuration and installed skills ──
+/.agent/
+/.agents/
+/.codex/
+skills-lock.json
+
+# ── Documentation and planning material ──
+# Keep commits focused on files used to build, run, or deploy the application.
+Project-docs/
+projects-docs/
+docs/
+documentation/
+*.md
+*.mdx
+*.rst
+*.adoc
+*.pdf
+*.docx
+README
+*.txt
+!**/requirements*.txt
+
+# ── Legacy frontend files ──
+# The application is React + Vite under frontend/src; these are unused Next.js leftovers.
+frontend/app/
+
+# ── Local environment samples ──
+sample.env

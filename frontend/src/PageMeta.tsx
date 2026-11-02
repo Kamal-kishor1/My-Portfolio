@@ -1,0 +1,2 @@
+import { Helmet } from 'react-helmet-async';
+export default function PageMeta({title,description='Software engineer focused on backend systems, practical AI, and reliable applications.'}:{title:string;description?:string}){return <Helmet><title>{title}</title><meta name="description" content={description}/><meta property="og:title" content={title}/><meta property="og:description" content={description}/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content={title}/></Helmet>}

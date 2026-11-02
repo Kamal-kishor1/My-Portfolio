@@ -1,0 +1,40 @@
+{
+  "name": "portfolio-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc --noEmit && vite build",
+    "type-check": "tsc --noEmit",
+    "start": "vite preview --host 0.0.0.0",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.20",
+    "@vitejs/plugin-react": "^6.1.2",
+    "axios": "^1.21.0",
+    "lucide-react": "^1.33.0",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-helmet-async": "^3.0.0",
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.18.5",
+    "remark-gfm": "^4.0.1",
+    "vite": "^8.3.5"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "typescript-eslint": "^8.57.0"
+  },
+  "optionalDependencies": {
+    "@emnapi/core": "1.11.3",
+    "@emnapi/runtime": "1.11.3"
+  },
+  "type": "module"
+}

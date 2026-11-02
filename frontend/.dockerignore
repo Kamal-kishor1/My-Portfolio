@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.git
+.env*
+*.md
+*.tsbuildinfo
+*.stackdump
+Dockerfile
+.dockerignore
+.DS_Store
+Thumbs.db
+unused/
+coverage/
