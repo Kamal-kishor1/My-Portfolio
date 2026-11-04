@@ -1,25 +1,17 @@
 # Security Policy
 
-Thank you for helping keep this project secure.
+## Supported versions
 
-## Supported Versions
+Only the latest version on the `main` branch is currently supported.
 
-Only the latest version of this portfolio application is actively maintained and supported.
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Please report suspected vulnerabilities through GitHub's private vulnerability reporting feature for this repository. Do not include sensitive vulnerability details in a public issue. If private reporting is unavailable, contact the maintainer privately through their GitHub profile.
 
-If you believe you have found a security vulnerability, please open a GitHub issue with details about the issue and reproduction steps.
+## Repository security automation
 
-Please avoid publicly disclosing sensitive vulnerabilities until they have been reviewed.
+- GitHub Actions runs frontend lint, type checking, and production builds.
+- GitHub Actions runs backend tests against PostgreSQL.
+- Dependabot is configured to check npm dependencies at the repository root and in `frontend/`, and Python dependencies in `backend/`.
 
-## Security Controls
-
-This repository uses:
-
-- GitHub Secret Scanning
-- Push Protection
-- Dependabot Alerts
-- Dependabot Security Updates
-- CodeQL Static Analysis
-
-All dependency and security updates are reviewed before deployment.
+Secret scanning, push protection, Dependabot alerts, and other GitHub security settings are controlled by repository settings and are not asserted here.
