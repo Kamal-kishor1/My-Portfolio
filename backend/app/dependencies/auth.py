@@ -1,6 +1,6 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError
+from jwt.exceptions import PyJWTError
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -25,7 +25,7 @@ def get_current_user(
         raise unauthorized
     try:
         payload = decode_access_token(token)
-    except JWTError:
+    except PyJWTError:
         raise unauthorized
 
     if payload.get("type") != "access":
