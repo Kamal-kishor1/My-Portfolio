@@ -91,5 +91,5 @@ README
 # The application is React + Vite under frontend/src; these are unused Next.js leftovers.
 frontend/app/
 
-# ── Local environment samples ──
-sample.env
+# ── Production environment  ──
+.env.production

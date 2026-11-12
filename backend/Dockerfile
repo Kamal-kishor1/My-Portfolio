@@ -47,4 +47,4 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 CMD ["pyt
 
 # No --reload in production images - reload is a dev-only convenience that
 # also burns extra CPU watching the filesystem.
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port \"${PORT:-8002}\" --proxy-headers --forwarded-allow-ips '*'"]
+CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port \"${PORT:-8002}\" --proxy-headers --forwarded-allow-ips '*'"]
