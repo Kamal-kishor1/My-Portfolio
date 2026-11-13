@@ -77,13 +77,12 @@ Project-docs/
 projects-docs/
 docs/
 documentation/
-*.md
 *.mdx
 *.rst
 *.adoc
 *.pdf
 *.docx
-README
+
 *.txt
 !**/requirements*.txt
 
