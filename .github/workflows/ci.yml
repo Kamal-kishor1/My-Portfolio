@@ -14,9 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VITE_API_URL: http://127.0.0.1:8002
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -86,9 +83,6 @@ jobs:
     needs: [frontend, backend, docker-images]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     environment:
       name: Preview
       url: ${{ steps.deploy.outputs.url }}
@@ -128,9 +122,6 @@ jobs:
     needs: [deploy-backend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     environment:
       name: Frontend-Production
       url: https://my-portfolio-john-ea11.vercel.app
