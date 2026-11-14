@@ -23,9 +23,7 @@ export default function StatusBar() {
         setStatus("offline");
         setDbStatus(null);
       }
-      setCheckedAt(
-        new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
-      );
+      setCheckedAt(data?.checked_at ? new Date(data.checked_at).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : "");
     }
 
     check();
@@ -52,8 +50,10 @@ export default function StatusBar() {
             aria-hidden="true"
           />
           <span>{label}</span>
-          <span className="text-[var(--color-border)]">/</span>
-          <span>db: {dbStatus ?? "unknown"}</span>
+          {dbStatus === "connected" && <>
+            <span className="text-[var(--color-border)]">/</span>
+            <span>db: connected</span>
+          </>}
         </div>
         {checkedAt && <span>last check {checkedAt}</span>}
       </div>

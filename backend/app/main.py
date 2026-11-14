@@ -1,7 +1,9 @@
 import logging
 import time
+from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -99,13 +101,20 @@ app.include_router(admin_audit_logs.router, prefix="/api")
 def health_check(db: Session = Depends(get_db)):
     try:
         db.execute(text("SELECT 1"))
-        db_status = "connected"
+        return {
+            "status": "ok",
+            "database": "connected",
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+        }
     except Exception:
-        db_status = "unreachable"
-    if db_status != "connected":
-        from fastapi import HTTPException
-        raise HTTPException(status_code=503, detail={"status": "unhealthy", "database": db_status})
-    return {"status": "ok", "database": db_status}
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "unhealthy",
+                "database": "unreachable",
+                "checked_at": datetime.now(timezone.utc).isoformat(),
+            },
+        )
 
 
 @app.get("/live")

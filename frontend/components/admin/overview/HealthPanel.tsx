@@ -8,6 +8,7 @@ type HealthState = "checking" | "online" | "offline";
 export function HealthPanel({ className }: { className?: string }) {
   const [state, setState] = useState<HealthState>("checking");
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
+  const [database, setDatabase] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -15,11 +16,18 @@ export function HealthPanel({ className }: { className?: string }) {
     async function check() {
       try {
         const res = await fetch(`${getApiBase()}/health`);
-        if (!cancelled) setState(res.ok ? "online" : "offline");
+        const data = await res.json();
+        if (!cancelled) {
+          setState(data.status === "ok" ? "online" : "offline");
+          setDatabase(data.database === "connected" ? "connected" : null);
+          setLastChecked(data.checked_at ? new Date(data.checked_at) : null);
+        }
       } catch {
-        if (!cancelled) setState("offline");
-      } finally {
-        if (!cancelled) setLastChecked(new Date());
+        if (!cancelled) {
+          setState("offline");
+          setDatabase(null);
+          setLastChecked(null);
+        }
       }
     }
 
@@ -48,14 +56,7 @@ export function HealthPanel({ className }: { className?: string }) {
         <span className={`h-2 w-2 rounded-full ${dotColor}`} />
         <span className="text-[var(--admin-text)] font-semibold">api: {state === "checking" ? "checking…" : state}</span>
       </div>
-      {/* GET /health currently returns only {"status": "ok"} — no separate DB
-          check — so we don't fabricate a "db: connected" line here. If the
-          backend adds DB-connectivity reporting to /health, surface it here. */}
-      <p className="mt-auto pt-4 font-mono text-[10px] leading-relaxed text-zinc-400">
-        Reflects API reachability only. Your backend&apos;s /health endpoint
-        doesn&apos;t currently report database connectivity separately, so no
-        DB status is shown.
-      </p>
+      {database && <div className="mt-2 font-mono text-xs text-[var(--admin-text-muted)]">db: {database}</div>}
     </div>
   );
 }

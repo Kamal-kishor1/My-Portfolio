@@ -47,6 +47,14 @@ export type HomepagePhoto = {
   alt_text: string;
 };
 
+export type PublicSiteSettings = {
+  contact_email: string | null;
+  linkedin_url: string | null;
+  github_url: string | null;
+  open_to_work_enabled: boolean;
+  open_to_work_text: string;
+};
+
 async function apiFetch<T>(path: string, revalidateSeconds = 60): Promise<T> {
   void revalidateSeconds;
   const res = await requestApi(`${API_BASE}${path}`);
@@ -74,7 +82,11 @@ export function getHomepagePhoto(): Promise<HomepagePhoto | null> {
   return apiFetch<HomepagePhoto | null>("/api/site/homepage-photo");
 }
 
-export async function getHealth(): Promise<{ status: string; database?: string } | null> {
+export function getSiteSettings(): Promise<PublicSiteSettings> {
+  return apiFetch<PublicSiteSettings>("/api/site-settings");
+}
+
+export async function getHealth(): Promise<{ status: string; database?: string; checked_at?: string } | null> {
   try {
     const res = await requestApi(`${API_BASE}/health`);
     if (!res.ok) return null;
