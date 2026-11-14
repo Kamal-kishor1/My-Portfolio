@@ -7,4 +7,5 @@ class PublicSiteSettings(BaseModel):
     github_url: HttpUrl | None = None
     open_to_work_enabled: bool = True
     open_to_work_text: str = "Open to work · Backend / AI-ML Engineer · India (remote OK)"
+    resume_available: bool = False
 

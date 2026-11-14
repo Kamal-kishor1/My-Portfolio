@@ -53,6 +53,7 @@ export type PublicSiteSettings = {
   github_url: string | null;
   open_to_work_enabled: boolean;
   open_to_work_text: string;
+  resume_available: boolean;
 };
 
 async function apiFetch<T>(path: string, revalidateSeconds = 60): Promise<T> {
@@ -84,6 +85,10 @@ export function getHomepagePhoto(): Promise<HomepagePhoto | null> {
 
 export function getSiteSettings(): Promise<PublicSiteSettings> {
   return apiFetch<PublicSiteSettings>("/api/site-settings");
+}
+
+export function getResumeDownloadUrl(): string {
+  return `${API_BASE}/api/resume/download`;
 }
 
 export async function getHealth(): Promise<{ status: string; database?: string; checked_at?: string } | null> {

@@ -29,12 +29,21 @@ def get_public_site_settings(db: Session = Depends(get_db)):
         .all()
     )
     values = {row.key: row.value for row in rows}
+    resume_setting = db.query(SiteSetting).filter(SiteSetting.key == "resume_pdf").first()
+    resume_media = (
+        db.query(Media)
+        .filter(Media.id == resume_setting.media_id, Media.content_type == "application/pdf")
+        .first()
+        if resume_setting and resume_setting.media_id
+        else None
+    )
     return PublicSiteSettings(
         contact_email=values.get("contact_email") or None,
         linkedin_url=values.get("linkedin_url") or None,
         github_url=values.get("github_url") or None,
         open_to_work_enabled=(values.get("open_to_work_enabled", "true").lower() == "true"),
         open_to_work_text=(values.get("open_to_work_text") or "").strip() or "Open to work · Backend / AI-ML Engineer · India (remote OK)",
+        resume_available=bool(resume_media and resume_media.storage_key),
     )
 
 

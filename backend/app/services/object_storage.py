@@ -39,10 +39,13 @@ def delete_object(key: str) -> None:
     _client().delete_object(Bucket=settings.neon_storage_bucket, Key=key)
 
 
-def presigned_download_url(key: str) -> str:
+def presigned_download_url(key: str, filename: str | None = None) -> str:
+    params = {"Bucket": settings.neon_storage_bucket, "Key": key}
+    if filename:
+        params["ResponseContentDisposition"] = f'attachment; filename="{filename}"'
     return _client().generate_presigned_url(
         "get_object",
-        Params={"Bucket": settings.neon_storage_bucket, "Key": key},
+        Params=params,
         ExpiresIn=settings.storage_url_expiry_seconds,
     )
 
