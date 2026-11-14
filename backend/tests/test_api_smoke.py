@@ -290,7 +290,7 @@ def test_contact_write_rate_limit(client: TestClient):
             json={
                 "name": "Rate Limit Test",
                 "email": "rate-limit@example.com",
-                "message": f"Message {index}",
+                "message": f"Rate limit test message {index}",
             },
         ).status_code
         for index in range(6)

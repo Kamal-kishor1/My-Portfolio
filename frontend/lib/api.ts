@@ -105,7 +105,8 @@ export async function submitContactMessage(payload: {
   name: string;
   email: string;
   message: string;
-}): Promise<{ status: string; id: number }> {
+  website: string;
+}): Promise<{ status: string; id: number | null }> {
   const res = await requestApi(`${API_BASE}/api/contact/`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

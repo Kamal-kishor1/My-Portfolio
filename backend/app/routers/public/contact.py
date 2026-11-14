@@ -11,17 +11,15 @@ router = APIRouter(prefix="/api/contact", tags=["public:contact"])
 
 
 class ContactMessageIn(BaseModel):
-    name: str = Field(min_length=1, max_length=120)
+    name: str = Field(min_length=2, max_length=80)
     email: EmailStr = Field(max_length=320)
-    message: str = Field(min_length=1, max_length=5000)
+    message: str = Field(min_length=10, max_length=2000)
+    website: str = Field(default="", max_length=500)
 
-    @field_validator("name", "message")
+    @field_validator("name", "message", "website", mode="before")
     @classmethod
-    def trim_and_reject_blank(cls, value: str) -> str:
-        value = value.strip()
-        if not value:
-            raise ValueError("This field cannot be blank")
-        return value
+    def trim_values(cls, value: str) -> str:
+        return value.strip() if isinstance(value, str) else value
 
 
 @router.post("/")
@@ -31,6 +29,9 @@ def submit_contact_message(
     payload: ContactMessageIn,
     db: Session = Depends(get_db),
 ):
+    if payload.website:
+        return {"status": "received", "id": None}
+
     entry = ContactMessage(name=payload.name, email=payload.email, message=payload.message)
     db.add(entry)
     db.commit()
