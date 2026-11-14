@@ -12,3 +12,4 @@ argon2-cffi==23.1.0
 slowapi==0.1.10
 boto3==1.43.123
 python-multipart==0.0.33
+httpx==0.28.1
