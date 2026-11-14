@@ -28,6 +28,7 @@ from app.routers.admin import contact_messages as admin_contact_messages
 from app.routers.admin import media as admin_media
 from app.routers.admin import seo_meta as admin_seo_meta
 from app.routers.admin import audit_logs as admin_audit_logs
+from app.routers.admin import site_settings as admin_site_settings
 
 configure_logging()
 logger = logging.getLogger("portfolio.http")
@@ -95,6 +96,7 @@ app.include_router(admin_contact_messages.router, prefix="/api")
 app.include_router(admin_media.router, prefix="/api")
 app.include_router(admin_seo_meta.router, prefix="/api")
 app.include_router(admin_audit_logs.router, prefix="/api")
+app.include_router(admin_site_settings.router, prefix="/api")
 
 
 @app.get("/health")

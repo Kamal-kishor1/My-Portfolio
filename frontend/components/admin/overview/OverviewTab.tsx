@@ -17,7 +17,7 @@ import { Skeleton } from "../Skeleton";
 
 import { Plus, FileText, Mail } from "lucide-react";
 
-export type TabId = "overview" | "projects" | "blog" | "resume" | "timeline" | "skills" | "profile" | "media" | "messages" | "seo";
+export type TabId = "overview" | "projects" | "blog" | "resume" | "timeline" | "skills" | "profile" | "media" | "messages" | "seo" | "settings";
 
 interface DashboardData {
   projects: Project[];

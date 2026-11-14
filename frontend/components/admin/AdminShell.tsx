@@ -8,6 +8,7 @@ import { ResumeTab } from "./resume/ResumeTab";
 import { MediaTab } from "./media/MediaTab";
 import { MessagesTab } from "./messages/MessagesTab";
 import { SeoMetaTab } from "./seo/SeoMetaTab";
+import { SiteSettingsTab } from "./settings/SiteSettingsTab";
 import { HomepagePhotoTab } from "./profile/HomepagePhotoTab";
 import { OverviewTab, type TabId } from "./overview/OverviewTab";
 import { ThemeToggle } from "../ThemeToggle";
@@ -23,6 +24,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "media", label: "MEDIA" },
   { id: "messages", label: "MESSAGES" },
   { id: "seo", label: "SEO META" },
+  { id: "settings", label: "SITE SETTINGS" },
 ];
 
 const TAB_CONTENT: Partial<Record<TabId, React.ComponentType>> = {
@@ -35,6 +37,7 @@ const TAB_CONTENT: Partial<Record<TabId, React.ComponentType>> = {
   media: MediaTab,
   messages: MessagesTab,
   seo: SeoMetaTab,
+  settings: SiteSettingsTab,
 };
 
 export function AdminShell() {

@@ -94,7 +94,6 @@ export function getResumeDownloadUrl(): string {
 export async function getHealth(): Promise<{ status: string; database?: string; checked_at?: string } | null> {
   try {
     const res = await requestApi(`${API_BASE}/health`);
-    if (!res.ok) return null;
     return res.json();
   } catch {
     return null;

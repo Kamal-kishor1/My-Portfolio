@@ -63,6 +63,10 @@ def login(client: TestClient) -> str:
 
 
 def test_health_and_public_reads(client: TestClient):
+    health = client.get("/health")
+    assert health.status_code == 200
+    assert health.json()["database"] == "connected"
+    assert health.json()["checked_at"].endswith("+00:00")
     live = client.get("/live")
     assert live.status_code == 200
     assert live.headers["x-content-type-options"] == "nosniff"
@@ -72,6 +76,10 @@ def test_health_and_public_reads(client: TestClient):
     assert client.get("/api/projects/").status_code == 200
     assert client.get("/api/blog-posts/").status_code == 200
     assert client.get("/api/resume/").status_code == 200
+    public_settings = client.get("/api/site-settings")
+    assert public_settings.status_code == 200
+    assert public_settings.json()["open_to_work_enabled"] is True
+    assert "admin_email" not in public_settings.json()
 
 
 def test_public_write_payload_limits(client: TestClient):
@@ -261,6 +269,19 @@ def test_admin_blog_resume_and_seo_crud_are_audited(client: TestClient):
 
 
 def test_contact_submission_and_admin_message_review(client: TestClient):
+    honeytrap = client.post(
+        "/api/contact/",
+        json={
+            "name": "Automated Visitor",
+            "email": "bot@example.com",
+            "message": "This message should not be stored.",
+            "website": "https://spam.example",
+        },
+    )
+    assert honeytrap.status_code == 200
+    assert honeytrap.json()["status"] == "received"
+    assert honeytrap.json()["id"] is None
+
     message = client.post(
         "/api/contact/",
         json={
@@ -281,6 +302,53 @@ def test_contact_submission_and_admin_message_review(client: TestClient):
     assert reviewed.status_code == 200
     assert reviewed.json()["is_read"] is True
     assert client.delete(f"/api/admin/contact-messages/{message_id}", headers=headers).status_code == 204
+
+
+def test_admin_site_settings_and_resume_media_delete_safety(client: TestClient, monkeypatch):
+    headers = {"Authorization": f"Bearer {login(client)}"}
+    media = Media(
+        filename="Kamal_Kishor_Resume.pdf",
+        url="neon-storage://uploads/portfolio/resume.pdf",
+        storage_key="portfolio/resume.pdf",
+        content_type="application/pdf",
+    )
+    with sessionmaker(bind=engine, autoflush=False, autocommit=False)() as db:
+        db.add(media)
+        db.commit()
+        db.refresh(media)
+        media_id = media.id
+
+    update = client.put(
+        "/api/admin/site-settings/",
+        headers=headers,
+        json={
+            "contact_email": "kamalpandey12345coc@gmail.com",
+            "linkedin_url": "https://linkedin.com/in/kamal-kishor",
+            "github_url": "https://github.com/Kamal-kishor1",
+            "open_to_work_enabled": True,
+            "open_to_work_text": "Open to work · Backend / AI-ML Engineer · India (remote OK)",
+            "resume_pdf_media_id": media_id,
+        },
+    )
+    assert update.status_code == 200
+    assert update.json()["resume_available"] is True
+    assert client.get("/api/site-settings").json()["contact_email"] == "kamalpandey12345coc@gmail.com"
+
+    signed_urls = []
+
+    def fake_presigned_download_url(key: str, filename: str | None = None) -> str:
+        signed_urls.append((key, filename))
+        return "https://storage.example/signed-resume"
+
+    monkeypatch.setattr("app.routers.public.resume.presigned_download_url", fake_presigned_download_url)
+    download = client.get("/api/resume/download", follow_redirects=False)
+    assert download.status_code == 302
+    assert download.headers["location"] == "https://storage.example/signed-resume"
+    assert signed_urls == [("portfolio/resume.pdf", "Kamal_Kishor_Resume.pdf")]
+
+    assert client.delete(f"/api/admin/media/{media_id}", headers=headers).status_code == 204
+    assert client.get("/api/site-settings").json()["resume_available"] is False
+    assert client.get("/api/resume/download").status_code == 404
 
 
 def test_contact_write_rate_limit(client: TestClient):
