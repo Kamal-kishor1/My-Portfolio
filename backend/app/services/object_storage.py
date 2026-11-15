@@ -7,13 +7,13 @@ from botocore.config import Config
 from app.core.config import settings
 
 
-@lru_cache(maxsize=1)
-def _client():
+@lru_cache(maxsize=2)
+def _client(endpoint_url: str | None = None):
     if not settings.storage_configured:
         raise RuntimeError("Neon Object Storage is not configured")
     return boto3.client(
         "s3",
-        endpoint_url=settings.aws_endpoint_url_s3,
+        endpoint_url=endpoint_url or settings.aws_endpoint_url_s3,
         region_name=settings.aws_region,
         aws_access_key_id=settings.aws_access_key_id.get_secret_value(),
         aws_secret_access_key=settings.aws_secret_access_key.get_secret_value(),
@@ -43,7 +43,7 @@ def presigned_download_url(key: str, filename: str | None = None) -> str:
     params = {"Bucket": settings.neon_storage_bucket, "Key": key}
     if filename:
         params["ResponseContentDisposition"] = f'attachment; filename="{filename}"'
-    return _client().generate_presigned_url(
+    return _client(settings.aws_public_endpoint_url_s3 or None).generate_presigned_url(
         "get_object",
         Params=params,
         ExpiresIn=settings.storage_url_expiry_seconds,

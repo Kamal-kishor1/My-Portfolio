@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     aws_access_key_id: SecretStr = SecretStr("")
     aws_secret_access_key: SecretStr = SecretStr("")
     aws_endpoint_url_s3: str = ""
+    aws_public_endpoint_url_s3: str = ""
     aws_region: str = ""
     neon_storage_bucket: str = "uploads"
     storage_url_expiry_seconds: int = 3600
