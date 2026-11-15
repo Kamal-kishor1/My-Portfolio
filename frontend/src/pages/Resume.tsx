@@ -3,7 +3,48 @@ import { Link } from "react-router-dom";
 import { getResume, getSiteSettings, getResumeDownloadUrl, type ResumeEntry } from "../../lib/api";
 import PageMeta from "../PageMeta";
 function formatRange(entry: ResumeEntry) { if (!entry.start_date) return null; return `${entry.start_date.slice(0, 7)} → ${entry.end_date ? entry.end_date.slice(0, 7) : "present"}`; }
-function Section({ title, entries }: { title: string; entries: ResumeEntry[] }) { if (!entries.length) return null; return <section className="mb-14"><h2 className="mb-6 font-mono text-sm uppercase tracking-widest text-[var(--color-text-muted)]">{title}</h2><div className="space-y-8">{entries.map(entry => <div key={entry.id} className="flex gap-4"><div className="w-12 shrink-0 pt-1 font-mono text-xs text-[var(--color-accent)]">{String(entry.sort_order).padStart(2, "0")}</div><div><h3 className="font-medium">{entry.title}</h3>{entry.organization && <p className="text-sm text-[var(--color-text-muted)]">{entry.organization}</p>}{formatRange(entry) && <p className="mt-1 font-mono text-xs text-[var(--color-amber)]">{formatRange(entry)}</p>}{entry.description && <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">{entry.description}</p>}</div></div>)}</div></section>; }
+function Section({ title, entries }: { title: string; entries: ResumeEntry[] }) {
+  if (!entries.length) return null;
+
+  return (
+    <section className="mb-14">
+      <h2 className="mb-6 font-mono text-sm uppercase tracking-widest text-[var(--color-text-muted)]">{title}</h2>
+      <div className="space-y-8">
+        {entries.map((entry) => {
+          const bullets = (entry.description ?? "")
+            .split(/;\s*/)
+            .map((item) => item.trim().replace(/[.]$/, ""))
+            .filter(Boolean);
+
+          return (
+            <div key={entry.id} className="flex gap-4">
+              <div className="w-12 shrink-0 pt-1 font-mono text-xs text-[var(--color-accent)]">
+                {String(entry.sort_order).padStart(2, "0")}
+              </div>
+              <div>
+                <h3 className="font-medium">{entry.title}</h3>
+                {entry.organization && <p className="text-sm text-[var(--color-text-muted)]">{entry.organization}</p>}
+                {formatRange(entry) && <p className="mt-1 font-mono text-xs text-[var(--color-amber)]">{formatRange(entry)}</p>}
+                {entry.description && entry.type === "experience" ? (
+                  <ul className="mt-3 space-y-2">
+                    {bullets.map((bullet, index) => (
+                      <li key={`${entry.id}-${index}`} className="flex gap-3 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                        <span className="mt-0.5 text-[var(--color-status-live)]" aria-hidden="true">✦</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : entry.description ? (
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">{entry.description}</p>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
 export default function Resume() {
   const [entries, setEntries] = useState<ResumeEntry[]>([]);
   const [resumeAvailable, setResumeAvailable] = useState<boolean | null>(null);
