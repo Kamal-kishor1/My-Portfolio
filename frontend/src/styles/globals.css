@@ -22,7 +22,7 @@
   --admin-border-strong: #2a2e37;
   --admin-text: #e4e7eb;
   --admin-text-muted: #7a8290;
-  --admin-text-faint: #3a3e47;
+  --admin-text-faint: #9aa3af;
   --admin-accent: #3ddc84;
   --admin-danger: #e05a4f;
 }
@@ -46,7 +46,7 @@
   --admin-border-strong: #c3ccc7;
   --admin-text: #12181a;
   --admin-text-muted: #5c6b64;
-  --admin-text-faint: #8a968f;
+  --admin-text-faint: #5c6b64;
   --admin-accent: #167a46;
   --admin-danger: #c23c31;
 }
@@ -111,6 +111,48 @@ body {
 .admin-root ::-webkit-scrollbar-track { background: transparent; }
 .admin-root ::-webkit-scrollbar-thumb { background: var(--admin-border-strong); border-radius: 4px; }
 .admin-root ::-webkit-scrollbar-thumb:hover { background: var(--admin-text-muted); }
+
+/* Theme-aware styles shared by admin editor dialogs. */
+.admin-modal-backdrop { background: rgb(0 0 0 / 65%); }
+.admin-modal-panel { background: var(--admin-surface); border-color: var(--admin-border); color: var(--admin-text); }
+.admin-modal-divider { border-color: var(--admin-border); }
+.admin-modal-label { color: var(--admin-text-muted); }
+.admin-modal-muted { color: var(--admin-text-muted); }
+.admin-modal-field {
+  border: 1px solid var(--admin-border-strong);
+  background: var(--admin-bg);
+  color: var(--admin-text);
+}
+.admin-modal-field::placeholder { color: var(--admin-text-muted); opacity: 1; }
+.admin-modal-field:focus-visible {
+  border-color: var(--admin-accent);
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 1px;
+}
+.admin-modal-option { background: var(--admin-surface); color: var(--admin-text); }
+.admin-modal-error {
+  border-color: color-mix(in srgb, var(--admin-danger) 30%, transparent);
+  background: color-mix(in srgb, var(--admin-danger) 10%, transparent);
+  color: var(--admin-danger);
+}
+.admin-modal-primary { background: var(--admin-accent); color: var(--admin-bg); }
+.admin-modal-primary:focus-visible,
+.admin-modal-secondary:focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 2px;
+}
+.admin-modal-secondary { color: var(--admin-text-muted); }
+.admin-modal-secondary:hover { color: var(--admin-text); }
+.admin-modal-toggle-track { background: var(--admin-border-strong); }
+.admin-modal-toggle-track::after {
+  background: var(--admin-surface);
+  border-color: var(--admin-border-strong);
+}
+.admin-modal-toggle-input:checked + .admin-modal-toggle-track { background: var(--admin-accent); }
+.admin-modal-toggle-input:focus-visible + .admin-modal-toggle-track {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 2px;
+}
 
 /* Hide scrollbars completely on specific elements */
 .no-scrollbar {

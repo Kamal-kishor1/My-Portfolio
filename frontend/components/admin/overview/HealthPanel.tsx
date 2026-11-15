@@ -47,7 +47,7 @@ export function HealthPanel({ className }: { className?: string }) {
       <div className="flex items-center justify-between">
         <h2 className="font-mono text-[11px] font-bold tracking-[0.2em] text-[var(--admin-text)]">SYSTEM HEALTH</h2>
         {lastChecked && (
-          <span className="font-mono text-[9px] text-zinc-400">
+          <span className="font-mono text-[9px] text-[var(--admin-text-muted)]">
             last check {lastChecked.toLocaleTimeString()}
           </span>
         )}

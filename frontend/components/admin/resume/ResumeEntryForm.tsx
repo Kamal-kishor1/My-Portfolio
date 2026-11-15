@@ -75,17 +75,17 @@ export function ResumeEntryForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm dark:bg-black/70"
+      className="admin-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="admin-modal-panel flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg border p-6 shadow-2xl">
         
         {/* Sticky Header */}
-        <div className="mb-4 flex shrink-0 items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
-          <h2 className="font-mono text-sm font-bold tracking-[0.15em] text-zinc-900 dark:text-zinc-100">
+        <div className="admin-modal-divider mb-4 flex shrink-0 items-center justify-between border-b pb-3">
+          <h2 className="font-mono text-sm font-bold tracking-[0.15em] text-[var(--admin-text)]">
             {entry ? "EDIT ENTRY" : "NEW ENTRY"}
           </h2>
-          <button onClick={onCancel} className="font-mono text-xs font-semibold text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <button onClick={onCancel} className="admin-modal-secondary font-mono text-xs font-semibold transition-colors">
             ESC ✕
           </button>
         </div>
@@ -116,16 +116,16 @@ export function ResumeEntryForm({
                 min="0"
               />
               {(!allowedTypes || allowedTypes.length > 1) && <label className="block w-full">
-                <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+                <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
                   CATEGORY (TYPE)
                 </span>
                 <select
                   value={input.type}
                   onChange={(e) => set("type", e.target.value as ResumeType)}
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+                  className="admin-modal-field w-full rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
                 >
                   {TYPES.map((t) => (
-                    <option key={t} value={t} className="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+                    <option key={t} value={t} className="admin-modal-option">
                       {t}
                     </option>
                   ))}
@@ -166,9 +166,9 @@ export function ResumeEntryForm({
           </div>
 
           {/* Sticky Footer */}
-          <div className="mt-4 flex shrink-0 flex-col gap-4 border-t border-zinc-200 bg-inherit pt-4 dark:border-zinc-800">
+          <div className="admin-modal-divider mt-4 flex shrink-0 flex-col gap-4 border-t bg-inherit pt-4">
             {error && (
-              <p className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 font-mono text-xs text-red-600 dark:text-red-400">
+              <p className="admin-modal-error rounded-md border px-4 py-3 font-mono text-xs">
                 {error}
               </p>
             )}
@@ -177,14 +177,14 @@ export function ResumeEntryForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 font-mono text-xs font-semibold text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                className="admin-modal-secondary px-4 py-2 font-mono text-xs font-semibold transition-colors"
               >
                 CANCEL
               </button>
               <button
                 type="submit"
                 disabled={saving || !input.title}
-                className="rounded-md bg-emerald-600 px-4 py-2 font-mono text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:text-zinc-950 dark:hover:bg-emerald-400"
+                className="admin-modal-primary rounded-md px-4 py-2 font-mono text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 {saving ? "SAVING…" : "SAVE ENTRY"}
               </button>
@@ -200,10 +200,10 @@ function ToggleSwitch({ label, checked, onChange }: { label: string; checked: bo
   return (
     <label className="mt-1 flex cursor-pointer items-center gap-3">
       <div className="relative">
-        <input type="checkbox" className="peer sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
-        <div className="h-5 w-9 rounded-full bg-zinc-300 peer-checked:bg-emerald-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-zinc-300 after:bg-white after:transition-all after:content-[''] dark:bg-zinc-700 dark:peer-checked:bg-emerald-500"></div>
+        <input type="checkbox" className="admin-modal-toggle-input peer sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+        <div className="admin-modal-toggle-track relative h-5 w-9 rounded-full transition-colors after:absolute after:left-[2px] after:top-[2px] after:h-4 after:w-4 after:translate-x-0 after:rounded-full after:border after:transition-transform after:content-[''] peer-checked:after:translate-x-full"></div>
       </div>
-      <span className="font-mono text-[10px] font-semibold tracking-wider text-zinc-600 dark:text-zinc-300">{label}</span>
+      <span className="font-mono text-[10px] font-semibold tracking-wider text-[var(--admin-text-muted)]">{label}</span>
     </label>
   );
 }
@@ -230,7 +230,7 @@ function TextField({
 
   return (
     <label className="block w-full">
-      <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+      <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
         {labelMain}
         {labelSub && <span className="ml-1 font-normal opacity-80">{labelSub}</span>}
       </span>
@@ -241,7 +241,7 @@ function TextField({
         autoFocus={autoFocus}
         min={min}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+        className="admin-modal-field w-full rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
       />
     </label>
   );
@@ -263,7 +263,7 @@ function TextAreaField({
 
   return (
     <label className="block w-full">
-      <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+      <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
         {labelMain}
         {labelSub && <span className="ml-1 font-normal opacity-80">{labelSub}</span>}
       </span>
@@ -271,7 +271,7 @@ function TextAreaField({
         value={value}
         rows={rows}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full resize-none rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+        className="admin-modal-field w-full resize-none rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
       />
     </label>
   );

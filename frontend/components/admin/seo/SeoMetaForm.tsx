@@ -71,17 +71,17 @@ export function SeoMetaForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm dark:bg-black/70"
+      className="admin-modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm"
       onClick={(e) => e.target === e.currentTarget && onCancel()}
     >
-      <div className="flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg border border-zinc-200 bg-white p-6 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="admin-modal-panel flex max-h-[85vh] w-full max-w-2xl flex-col rounded-lg border p-6 shadow-2xl">
         
         {/* Sticky Header */}
-        <div className="mb-4 flex shrink-0 items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
-          <h2 className="font-mono text-sm font-bold tracking-[0.15em] text-zinc-900 dark:text-zinc-100">
+        <div className="admin-modal-divider mb-4 flex shrink-0 items-center justify-between border-b pb-3">
+          <h2 className="font-mono text-sm font-bold tracking-[0.15em] text-[var(--admin-text)]">
             {entry ? "EDIT SEO META" : "NEW SEO META"}
           </h2>
-          <button onClick={onCancel} className="font-mono text-xs font-semibold text-zinc-500 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">
+          <button onClick={onCancel} className="admin-modal-secondary font-mono text-xs font-semibold transition-colors">
             ESC ✕
           </button>
         </div>
@@ -93,16 +93,16 @@ export function SeoMetaForm({
             
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="block w-full">
-                <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+                <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
                   ENTITY TYPE
                 </span>
                 <select
                   value={input.entity_type}
                   onChange={(e) => handleEntityTypeChange(e.target.value as SeoEntityType)}
-                  className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+                  className="admin-modal-field w-full rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
                 >
                   {ENTITY_TYPES.map((t) => (
-                    <option key={t} value={t} className="bg-white text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
+                    <option key={t} value={t} className="admin-modal-option">
                       {t}
                     </option>
                   ))}
@@ -143,23 +143,23 @@ export function SeoMetaForm({
               onChange={(v) => set("og_image_id", v ? Number(v) : null)}
             />
 
-            <div className="rounded-md border border-zinc-200 bg-zinc-100 p-4 text-xs dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="mb-3 font-mono text-[9px] font-bold tracking-[0.15em] text-zinc-500 uppercase">SEARCH PREVIEW</p>
-              <p className="truncate text-base text-blue-600 dark:text-[#8ab4f8]">{input.title || "Page title"}</p>
-              <p className="text-sm text-emerald-700 dark:text-emerald-500">
+            <div className="admin-modal-divider rounded-md border bg-[var(--admin-bg)] p-4 text-xs">
+              <p className="mb-3 font-mono text-[9px] font-bold tracking-[0.15em] text-[var(--admin-text-muted)] uppercase">SEARCH PREVIEW</p>
+              <p className="truncate text-base text-[var(--admin-accent)]">{input.title || "Page title"}</p>
+              <p className="text-sm text-[var(--admin-accent)]">
                 {input.entity_type}
                 {input.entity_id !== null ? ` #${input.entity_id}` : " (site-wide)"}
               </p>
-              <p className="mt-1 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
+              <p className="admin-modal-muted mt-1 line-clamp-2 text-sm">
                 {input.description || "Meta description will appear here."}
               </p>
             </div>
           </div>
 
           {/* Sticky Footer */}
-          <div className="mt-4 flex shrink-0 flex-col gap-4 border-t border-zinc-200 bg-inherit pt-4 dark:border-zinc-800">
+          <div className="admin-modal-divider mt-4 flex shrink-0 flex-col gap-4 border-t bg-inherit pt-4">
             {error && (
-              <p className="rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 font-mono text-xs text-red-600 dark:text-red-400">
+              <p className="admin-modal-error rounded-md border px-4 py-3 font-mono text-xs">
                 {error}
               </p>
             )}
@@ -168,14 +168,14 @@ export function SeoMetaForm({
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-4 py-2 font-mono text-xs font-semibold text-zinc-600 transition-colors hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                className="admin-modal-secondary px-4 py-2 font-mono text-xs font-semibold transition-colors"
               >
                 CANCEL
               </button>
               <button
                 type="submit"
                 disabled={saving || (input.entity_type !== "site" && input.entity_id === null)}
-                className="rounded-md bg-emerald-600 px-4 py-2 font-mono text-xs font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:opacity-50 dark:bg-emerald-500 dark:text-zinc-950 dark:hover:bg-emerald-400"
+                className="admin-modal-primary rounded-md px-4 py-2 font-mono text-xs font-semibold shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 {saving ? "SAVING…" : "SAVE META"}
               </button>
@@ -190,7 +190,7 @@ export function SeoMetaForm({
 function CharCount({ value, limit }: { value: string; limit: number }) {
   const over = value.length > limit;
   return (
-    <span className={`absolute right-0 top-0 font-mono text-[10px] font-semibold ${over ? "text-red-500 dark:text-red-400" : "text-zinc-400 dark:text-zinc-500"}`}>
+    <span className={`absolute right-0 top-0 font-mono text-[10px] font-semibold ${over ? "text-[var(--admin-danger)]" : "text-[var(--admin-text-muted)]"}`}>
       {value.length} / {limit}
     </span>
   );
@@ -216,7 +216,7 @@ function Field({
 
   return (
     <label className="block w-full relative">
-      <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+      <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
         {labelMain}
         {labelSub && <span className="ml-1 font-normal opacity-80">{labelSub}</span>}
       </span>
@@ -226,7 +226,7 @@ function Field({
         required={required}
         autoFocus={autoFocus}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+        className="admin-modal-field w-full rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
       />
     </label>
   );
@@ -248,7 +248,7 @@ function TextArea({
 
   return (
     <label className="block w-full relative">
-      <span className="mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider text-zinc-600 dark:text-zinc-400">
+      <span className="admin-modal-label mb-1.5 flex font-mono text-xs font-semibold uppercase tracking-wider">
         {labelMain}
         {labelSub && <span className="ml-1 font-normal opacity-80">{labelSub}</span>}
       </span>
@@ -256,7 +256,7 @@ function TextArea({
         value={value}
         rows={rows}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full resize-none rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none transition-all placeholder:text-zinc-400 focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-emerald-500 dark:focus:ring-emerald-500 font-mono"
+        className="admin-modal-field w-full resize-none rounded-md px-3 py-2 font-mono text-sm outline-none transition-colors"
       />
     </label>
   );
