@@ -45,7 +45,10 @@ def test_rate_limit_falls_back_to_socket_ip_and_ignores_untrusted_forwarded_head
 def test_rate_limit_ignores_cloudflare_header_when_not_configured(monkeypatch):
     monkeypatch.setattr(settings, "trust_cloudflare_client_ip", False)
     request = make_request(
-        [(b"cf-connecting-ip", b"203.0.113.17")],
+        [
+            (b"cf-connecting-ip", b"203.0.113.17"),
+            (b"x-forwarded-for", b"198.51.100.99"),
+        ],
         ("192.0.2.44", 12345),
     )
 
