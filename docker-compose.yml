@@ -16,6 +16,32 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
 
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: localportfolio
+      MINIO_ROOT_PASSWORD: localportfolio-secret
+    volumes:
+      - miniodata:/data
+    ports:
+      - "${MINIO_API_PORT:-9003}:9000"
+      - "${MINIO_CONSOLE_PORT:-9004}:9001"
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    environment:
+      MINIO_ROOT_USER: localportfolio
+      MINIO_ROOT_PASSWORD: localportfolio-secret
+      LOCAL_STORAGE_BUCKET: portfolio-local
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      until mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" >/dev/null 2>&1; do sleep 1; done;
+      mc mb --ignore-existing "local/$${LOCAL_STORAGE_BUCKET}"
+
   backend:
     build:
       context: ./backend
@@ -23,6 +49,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/portfolio
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
@@ -31,20 +59,22 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3001,http://127.0.0.1:3001,http://portfolio.local}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_ENDPOINT_URL_S3: ${AWS_ENDPOINT_URL_S3:-}
-      AWS_REGION: ${AWS_REGION:-}
-      NEON_STORAGE_BUCKET: ${NEON_STORAGE_BUCKET:-uploads}
+      # Force local Docker uploads to MinIO even if .env contains cloud credentials.
+      AWS_ACCESS_KEY_ID: localportfolio
+      AWS_SECRET_ACCESS_KEY: localportfolio-secret
+      AWS_ENDPOINT_URL_S3: http://minio:9000
+      AWS_REGION: us-east-1
+      NEON_STORAGE_BUCKET: portfolio-local
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 15
       REFRESH_TOKEN_EXPIRE_DAYS: 30
       LOGIN_RATE_LIMIT: ${LOGIN_RATE_LIMIT:-5/minute}
-      CONTACT_RATE_LIMIT: ${CONTACT_RATE_LIMIT:-5/hour}
+      CONTACT_RATE_LIMIT: ${CONTACT_RATE_LIMIT:-20/hour}
       ANALYTICS_RATE_LIMIT: ${ANALYTICS_RATE_LIMIT:-60/minute}
-      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      RESEND_API_KEY: ""
       RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
       CONTACT_NOTIFICATION_TO: ${CONTACT_NOTIFICATION_TO:-}
+      CONTACT_NOTIFICATION_DRY_RUN: "true"
       TRUST_CLOUDFLARE_CLIENT_IP: ${TRUST_CLOUDFLARE_CLIENT_IP:-false}
     ports:
       - "${API_PORT:-8002}:8002"
@@ -77,6 +107,7 @@ services:
 
 volumes:
   pgdata:
+  miniodata:
 
 
 
