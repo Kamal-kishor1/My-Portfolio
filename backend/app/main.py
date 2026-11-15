@@ -1,5 +1,6 @@
 import logging
 import time
+from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, Request
@@ -32,15 +33,20 @@ from app.routers.admin import site_settings as admin_site_settings
 
 configure_logging()
 logger = logging.getLogger("portfolio.http")
-app = FastAPI(title="Portfolio API", version="0.1.0")
-
-
-@app.on_event("startup")
 def warn_about_missing_production_email_configuration():
     if settings.environment.lower() in {"production", "prod"} and not settings.resend_api_key.get_secret_value():
         logger.warning(
             "RESEND_API_KEY is missing in production; contact notification emails will be skipped"
         )
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    warn_about_missing_production_email_configuration()
+    yield
+
+
+app = FastAPI(title="Portfolio API", version="0.1.0", lifespan=lifespan)
 
 
 @app.middleware("http")
