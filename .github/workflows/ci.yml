@@ -80,11 +80,14 @@ jobs:
           tags: portfolio-frontend:ci
           load: true
           build-args: |
-            VITE_API_URL=https://portfolio-backend-r80f.onrender.com
+            VITE_API_URL=https://portfolio-backend-1mxv.onrender.com
 
   deploy-preview:
     needs: [frontend, backend, docker-images]
-    if: github.event_name == 'pull_request'
+    if: >-
+          github.event_name == 'pull_request' &&
+          github.actor != 'dependabot[bot]' &&
+          github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment:
       name: Preview
