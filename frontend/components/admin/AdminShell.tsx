@@ -78,7 +78,7 @@ export function AdminShell() {
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={[
-              "relative shrink-0 whitespace-nowrap px-4 py-2.5 font-mono text-xs tracking-[0.12em] transition-colors",
+              "relative shrink-0 whitespace-nowrap px-4 py-2.5 font-mono text-xs tracking-[0.12em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--admin-accent)]",
               active === tab.id
                 ? "text-[var(--admin-accent)]"
                 : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text)]",

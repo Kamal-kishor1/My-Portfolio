@@ -62,8 +62,8 @@ export default function Resume() {
         <h1 className="mb-6 font-mono text-3xl font-semibold tracking-tight">Résumé</h1>
         <div className="flex flex-wrap items-center gap-3 font-mono text-sm" aria-busy={resumeAvailable === null}>
           {resumeAvailable === true ? <>
-            <a href={getResumeDownloadUrl()} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90">Download PDF</a>
-            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
+            <a href={getResumeDownloadUrl()} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">Download PDF</a>
+            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">Contact me</Link>
           </> : resumeAvailable === false ? <>
             <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
             <p className="basis-full text-xs leading-relaxed text-[var(--color-text-muted)]">Résumé PDF is currently unavailable. Please contact me by email.</p>

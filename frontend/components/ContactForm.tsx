@@ -89,7 +89,7 @@ export default function ContactForm() {
         <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 
-      <button type="submit" disabled={state === "submitting"} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-mono text-sm font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90 disabled:opacity-50">
+      <button type="submit" disabled={state === "submitting"} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-mono text-sm font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] disabled:opacity-50">
         {state === "submitting" ? "Sending…" : "Send message"}
       </button>
       {state === "error" && <p className="font-mono text-xs text-red-500" aria-live="polite">Your message could not be sent. Please try again.</p>}

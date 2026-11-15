@@ -36,14 +36,14 @@ export default function Contact() {
             {settings?.contact_email && <div>
               <p className="mb-1 font-mono text-xs text-[var(--color-text-muted)]">Email</p>
               <div className="flex flex-wrap items-center gap-2">
-                <a className="break-all text-[var(--color-accent)] hover:underline" href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
-                <button type="button" onClick={copyEmail} className="rounded-sm border border-[var(--color-border)] px-2 py-1 font-mono text-xs hover:border-[var(--color-accent)]">{copyState === 'copied' ? 'Copied' : 'Copy email'}</button>
+                <a className="break-all text-[var(--color-accent)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]" href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
+                <button type="button" onClick={copyEmail} className="rounded-sm border border-[var(--color-border)] px-2 py-1 font-mono text-xs hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">{copyState === 'copied' ? 'Copied' : 'Copy email'}</button>
               </div>
               {copyState === 'error' && <p className="mt-1 font-mono text-xs text-red-500" aria-live="polite">Could not copy. Select the email address to copy it.</p>}
             </div>}
-            {settings?.linkedin_url && <a className="block text-[var(--color-accent)] hover:underline" href={settings.linkedin_url} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>}
-            {settings?.github_url && <a className="block text-[var(--color-accent)] hover:underline" href={settings.github_url} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>}
-            {settings?.resume_available && <a className="inline-flex rounded-sm border border-[var(--color-border)] px-3 py-2 font-mono text-xs hover:border-[var(--color-accent)]" href={getResumeDownloadUrl()}>Download PDF</a>}
+            {settings?.linkedin_url && <a className="block text-[var(--color-accent)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]" href={settings.linkedin_url} target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>}
+            {settings?.github_url && <a className="block text-[var(--color-accent)] hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]" href={settings.github_url} target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>}
+            {settings?.resume_available && <a className="inline-flex rounded-sm border border-[var(--color-border)] px-3 py-2 font-mono text-xs hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]" href={getResumeDownloadUrl()}>Download PDF</a>}
             {!settings && <p className="text-xs text-[var(--color-text-muted)]">Direct links are temporarily unavailable.</p>}
           </div>
         </aside>
