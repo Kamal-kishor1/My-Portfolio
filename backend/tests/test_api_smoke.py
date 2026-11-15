@@ -32,6 +32,7 @@ def client(monkeypatch):
     monkeypatch.setattr(settings, "resend_api_key", SecretStr(""))
     monkeypatch.setattr(settings, "resend_from_email", "")
     monkeypatch.setattr(settings, "contact_notification_to", "")
+    monkeypatch.setattr(settings, "contact_notification_dry_run", False)
 
     with TestClient(app) as test_client:
         yield test_client
@@ -435,6 +436,28 @@ def test_contact_notification_skips_when_unconfigured_and_sanitizes_subject(monk
     assert "\r" not in email_payload["subject"] and "\n" not in email_payload["subject"]
     assert email_payload["reply_to"] == "visitor@example.com"
     assert email_payload["to"] == ["owner@example.test"]
+
+
+def test_contact_notification_dry_run_never_sends(monkeypatch, caplog):
+    from app.services import contact_notifications
+
+    calls = []
+    monkeypatch.setattr(settings, "contact_notification_dry_run", True)
+    monkeypatch.setattr(contact_notifications.httpx, "post", lambda *args, **kwargs: calls.append(args))
+    contact_notifications.send_contact_notification("Local", "visitor@example.com", "A message")
+
+    assert calls == []
+    assert "attempted in dry-run mode; no email was sent" in caplog.text
+
+
+def test_production_startup_warns_when_resend_key_is_missing(monkeypatch, caplog):
+    from app.main import warn_about_missing_production_email_configuration
+
+    monkeypatch.setattr(settings, "environment", "production")
+    monkeypatch.setattr(settings, "resend_api_key", SecretStr(""))
+    warn_about_missing_production_email_configuration()
+
+    assert "RESEND_API_KEY is missing in production" in caplog.text
 
 
 def test_admin_site_settings_and_resume_media_delete_safety(client: TestClient, monkeypatch):

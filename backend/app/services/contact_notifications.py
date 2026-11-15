@@ -16,6 +16,9 @@ def _single_line(value: str) -> str:
 def send_contact_notification(name: str, visitor_email: str, message: str) -> None:
     """Send a Resend notification after the contact record has been committed."""
     api_key = settings.resend_api_key.get_secret_value()
+    if settings.contact_notification_dry_run:
+        logger.info("Contact notification attempted in dry-run mode; no email was sent")
+        return
     if not api_key or not settings.resend_from_email or not settings.contact_notification_to:
         logger.warning("Contact notification skipped because Resend is not fully configured")
         return

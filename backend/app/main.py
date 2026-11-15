@@ -35,6 +35,14 @@ logger = logging.getLogger("portfolio.http")
 app = FastAPI(title="Portfolio API", version="0.1.0")
 
 
+@app.on_event("startup")
+def warn_about_missing_production_email_configuration():
+    if settings.environment.lower() in {"production", "prod"} and not settings.resend_api_key.get_secret_value():
+        logger.warning(
+            "RESEND_API_KEY is missing in production; contact notification emails will be skipped"
+        )
+
+
 @app.middleware("http")
 async def request_logging(request: Request, call_next):
     started = time.perf_counter()
