@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     aws_access_key_id: SecretStr = SecretStr("")
     aws_secret_access_key: SecretStr = SecretStr("")
     aws_endpoint_url_s3: str = ""
+    aws_public_endpoint_url_s3: str = ""
     aws_region: str = ""
     neon_storage_bucket: str = "uploads"
     storage_url_expiry_seconds: int = 3600
@@ -31,8 +32,13 @@ class Settings(BaseSettings):
 
     # Login rate limiting enforced by slowapi.
     login_rate_limit: str = "5/minute"
-    contact_rate_limit: str = "5/hour"
+    contact_rate_limit: str = "20/hour"
     analytics_rate_limit: str = "60/minute"
+    resend_api_key: SecretStr = SecretStr("")
+    resend_from_email: str = ""
+    contact_notification_to: str = ""
+    contact_notification_dry_run: bool = False
+    trust_cloudflare_client_ip: bool = False
 
     # CORS origins supplied as a comma-separated ALLOWED_ORIGINS value.
     allowed_origins: str = "http://localhost:3001,http://127.0.0.1:3001,http://localhost:3000"

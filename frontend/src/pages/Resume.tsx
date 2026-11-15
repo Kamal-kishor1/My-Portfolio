@@ -1,6 +1,76 @@
 import { useEffect, useState } from "react";
-import { getResume, type ResumeEntry } from "../../lib/api";
+import { Link } from "react-router-dom";
+import { getResume, getSiteSettings, getResumeDownloadUrl, type ResumeEntry } from "../../lib/api";
 import PageMeta from "../PageMeta";
 function formatRange(entry: ResumeEntry) { if (!entry.start_date) return null; return `${entry.start_date.slice(0, 7)} → ${entry.end_date ? entry.end_date.slice(0, 7) : "present"}`; }
-function Section({ title, entries }: { title: string; entries: ResumeEntry[] }) { if (!entries.length) return null; return <section className="mb-14"><h2 className="mb-6 font-mono text-sm uppercase tracking-widest text-[var(--color-text-muted)]">{title}</h2><div className="space-y-8">{entries.map(entry => <div key={entry.id} className="flex gap-4"><div className="w-12 shrink-0 pt-1 font-mono text-xs text-[var(--color-accent)]">{String(entry.sort_order).padStart(2, "0")}</div><div><h3 className="font-medium">{entry.title}</h3>{entry.organization && <p className="text-sm text-[var(--color-text-muted)]">{entry.organization}</p>}{formatRange(entry) && <p className="mt-1 font-mono text-xs text-[var(--color-amber)]">{formatRange(entry)}</p>}{entry.description && <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">{entry.description}</p>}</div></div>)}</div></section>; }
-export default function Resume() { const [entries, setEntries] = useState<ResumeEntry[]>([]); useEffect(() => { getResume().then(setEntries).catch(() => setEntries([])); }, []); return <><PageMeta title="Résumé — Kamal Kishor" description="Experience, education, and technical skills of Kamal Kishor, Software Engineer."/><div className="mx-auto max-w-3xl px-6 py-16"><p className="mb-2 font-mono text-sm text-[var(--color-status-live)]">Experience · Education · Skills</p><h1 className="mb-10 font-mono text-3xl font-semibold tracking-tight">Résumé</h1>{entries.length === 0 ? <p className="text-sm text-[var(--color-text-muted)]">Résumé details are being updated. Please check back soon.</p> : <><Section title="Experience" entries={entries.filter(e => e.type === "experience")}/><Section title="Education" entries={entries.filter(e => e.type === "education")}/><Section title="Technical Skills" entries={entries.filter(e => e.type === "skill")}/></>}</div></>; }
+function Section({ title, entries }: { title: string; entries: ResumeEntry[] }) {
+  if (!entries.length) return null;
+
+  return (
+    <section className="mb-14">
+      <h2 className="mb-6 font-mono text-sm uppercase tracking-widest text-[var(--color-text-muted)]">{title}</h2>
+      <div className="space-y-8">
+        {entries.map((entry) => {
+          const bullets = (entry.description ?? "")
+            .split(/;\s*/)
+            .map((item) => item.trim().replace(/[.]$/, ""))
+            .filter(Boolean);
+
+          return (
+            <div key={entry.id} className="flex gap-4">
+              <div className="w-12 shrink-0 pt-1 font-mono text-xs text-[var(--color-accent)]">
+                {String(entry.sort_order).padStart(2, "0")}
+              </div>
+              <div>
+                <h3 className="font-medium">{entry.title}</h3>
+                {entry.organization && <p className="text-sm text-[var(--color-text-muted)]">{entry.organization}</p>}
+                {formatRange(entry) && <p className="mt-1 font-mono text-xs text-[var(--color-amber)]">{formatRange(entry)}</p>}
+                {entry.description && entry.type === "experience" ? (
+                  <ul className="mt-3 space-y-2">
+                    {bullets.map((bullet, index) => (
+                      <li key={`${entry.id}-${index}`} className="flex gap-3 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                        <span className="mt-0.5 text-[var(--color-status-live)]" aria-hidden="true">✦</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : entry.description ? (
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--color-text-muted)]">{entry.description}</p>
+                ) : null}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+export default function Resume() {
+  const [entries, setEntries] = useState<ResumeEntry[]>([]);
+  const [resumeAvailable, setResumeAvailable] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    getResume().then(setEntries).catch(() => setEntries([]));
+    getSiteSettings().then((settings) => setResumeAvailable(settings.resume_available)).catch(() => setResumeAvailable(false));
+  }, []);
+
+  return <>
+    <PageMeta title="Résumé — Kamal Kishor" description="Experience, education, and technical skills of Kamal Kishor, Software Engineer."/>
+    <div className="mx-auto max-w-3xl px-6 py-16">
+      <section className="mb-12">
+        <p className="mb-2 font-mono text-sm text-[var(--color-status-live)]">Experience · Education · Skills</p>
+        <h1 className="mb-6 font-mono text-3xl font-semibold tracking-tight">Résumé</h1>
+        <div className="flex flex-wrap items-center gap-3 font-mono text-sm" aria-busy={resumeAvailable === null}>
+          {resumeAvailable === true ? <>
+            <a href={getResumeDownloadUrl()} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">Download PDF</a>
+            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">Contact me</Link>
+          </> : resumeAvailable === false ? <>
+            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
+            <p className="basis-full text-xs leading-relaxed text-[var(--color-text-muted)]">Résumé PDF is currently unavailable. Please contact me by email.</p>
+          </> : <span className="h-10" aria-hidden="true" />}
+        </div>
+      </section>
+      {entries.length === 0 ? <p className="text-sm text-[var(--color-text-muted)]">Résumé details are being updated. Please check back soon.</p> : <><Section title="Experience" entries={entries.filter(e => e.type === "experience")}/><Section title="Education" entries={entries.filter(e => e.type === "education")}/><Section title="Technical Skills" entries={entries.filter(e => e.type === "skill")}/></>}
+    </div>
+  </>;
+}

@@ -13,3 +13,4 @@ from app.models.contact_message import ContactMessage  # noqa: F401
 from app.models.seo_meta import SeoMeta  # noqa: F401
 from app.models.analytics_event import AnalyticsEvent  # noqa: F401
 from app.models.admin_audit_log import AdminAuditLog  # noqa: F401
+from app.models.site_setting import SiteSetting  # noqa: F401

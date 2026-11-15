@@ -8,6 +8,7 @@ import { ResumeTab } from "./resume/ResumeTab";
 import { MediaTab } from "./media/MediaTab";
 import { MessagesTab } from "./messages/MessagesTab";
 import { SeoMetaTab } from "./seo/SeoMetaTab";
+import { SiteSettingsTab } from "./settings/SiteSettingsTab";
 import { HomepagePhotoTab } from "./profile/HomepagePhotoTab";
 import { OverviewTab, type TabId } from "./overview/OverviewTab";
 import { ThemeToggle } from "../ThemeToggle";
@@ -23,6 +24,7 @@ const TABS: { id: TabId; label: string }[] = [
   { id: "media", label: "MEDIA" },
   { id: "messages", label: "MESSAGES" },
   { id: "seo", label: "SEO META" },
+  { id: "settings", label: "SITE SETTINGS" },
 ];
 
 const TAB_CONTENT: Partial<Record<TabId, React.ComponentType>> = {
@@ -35,6 +37,7 @@ const TAB_CONTENT: Partial<Record<TabId, React.ComponentType>> = {
   media: MediaTab,
   messages: MessagesTab,
   seo: SeoMetaTab,
+  settings: SiteSettingsTab,
 };
 
 export function AdminShell() {
@@ -75,7 +78,7 @@ export function AdminShell() {
             key={tab.id}
             onClick={() => setActive(tab.id)}
             className={[
-              "relative shrink-0 whitespace-nowrap px-4 py-2.5 font-mono text-xs tracking-[0.12em] transition-colors",
+              "relative shrink-0 whitespace-nowrap px-4 py-2.5 font-mono text-xs tracking-[0.12em] transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-[var(--admin-accent)]",
               active === tab.id
                 ? "text-[var(--admin-accent)]"
                 : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text)]",

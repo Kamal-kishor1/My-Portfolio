@@ -16,6 +16,26 @@ services:
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
 
+  local-s3:
+    image: motoserver/moto:latest
+    restart: unless-stopped
+    environment:
+      MOTO_PORT: 5000
+    ports:
+      - "${LOCAL_S3_PORT:-4566}:5000"
+
+  local-s3-init:
+    image: portfolio-backend
+    depends_on:
+      - local-s3
+    environment:
+      AWS_ACCESS_KEY_ID: localportfolio
+      AWS_SECRET_ACCESS_KEY: localportfolio-secret
+      AWS_ENDPOINT_URL_S3: http://local-s3:5000
+      AWS_REGION: us-east-1
+      NEON_STORAGE_BUCKET: portfolio-local
+    entrypoint: ["python", "/app/scripts/init_local_storage.py"]
+
   backend:
     build:
       context: ./backend
@@ -23,6 +43,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      local-s3-init:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgresql+psycopg2://postgres:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/portfolio
       JWT_SECRET_KEY: ${JWT_SECRET_KEY:?Set JWT_SECRET_KEY in .env}
@@ -31,17 +53,24 @@ services:
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:3001,http://127.0.0.1:3001,http://portfolio.local}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
-      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
-      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
-      AWS_ENDPOINT_URL_S3: ${AWS_ENDPOINT_URL_S3:-}
-      AWS_REGION: ${AWS_REGION:-}
-      NEON_STORAGE_BUCKET: ${NEON_STORAGE_BUCKET:-uploads}
+      # Force local Docker uploads to Moto even if .env contains cloud credentials.
+      AWS_ACCESS_KEY_ID: localportfolio
+      AWS_SECRET_ACCESS_KEY: localportfolio-secret
+      AWS_ENDPOINT_URL_S3: http://local-s3:5000
+      AWS_PUBLIC_ENDPOINT_URL_S3: http://localhost:${LOCAL_S3_PORT:-4566}
+      AWS_REGION: us-east-1
+      NEON_STORAGE_BUCKET: portfolio-local
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 15
       REFRESH_TOKEN_EXPIRE_DAYS: 30
       LOGIN_RATE_LIMIT: ${LOGIN_RATE_LIMIT:-5/minute}
-      CONTACT_RATE_LIMIT: ${CONTACT_RATE_LIMIT:-5/hour}
+      CONTACT_RATE_LIMIT: ${CONTACT_RATE_LIMIT:-20/hour}
       ANALYTICS_RATE_LIMIT: ${ANALYTICS_RATE_LIMIT:-60/minute}
+      RESEND_API_KEY: ""
+      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-}
+      CONTACT_NOTIFICATION_TO: ${CONTACT_NOTIFICATION_TO:-}
+      CONTACT_NOTIFICATION_DRY_RUN: "true"
+      TRUST_CLOUDFLARE_CLIENT_IP: ${TRUST_CLOUDFLARE_CLIENT_IP:-false}
     ports:
       - "${API_PORT:-8002}:8002"
     healthcheck:

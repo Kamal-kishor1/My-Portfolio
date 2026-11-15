@@ -39,6 +39,16 @@ services:
       - key: LOGIN_RATE_LIMIT
         value: 5/minute
       - key: CONTACT_RATE_LIMIT
-        value: 5/hour
+        value: 20/hour
       - key: ANALYTICS_RATE_LIMIT
         value: 60/minute
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: CONTACT_NOTIFICATION_TO
+        sync: false
+      - key: CONTACT_NOTIFICATION_DRY_RUN
+        value: "false"
+      - key: TRUST_CLOUDFLARE_CLIENT_IP
+        value: "true"

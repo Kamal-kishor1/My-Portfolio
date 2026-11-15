@@ -1,7 +1,10 @@
 import logging
 import time
+from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 
 from fastapi import Depends, FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
@@ -26,10 +29,24 @@ from app.routers.admin import contact_messages as admin_contact_messages
 from app.routers.admin import media as admin_media
 from app.routers.admin import seo_meta as admin_seo_meta
 from app.routers.admin import audit_logs as admin_audit_logs
+from app.routers.admin import site_settings as admin_site_settings
 
 configure_logging()
 logger = logging.getLogger("portfolio.http")
-app = FastAPI(title="Portfolio API", version="0.1.0")
+def warn_about_missing_production_email_configuration():
+    if settings.environment.lower() in {"production", "prod"} and not settings.resend_api_key.get_secret_value():
+        logger.warning(
+            "RESEND_API_KEY is missing in production; contact notification emails will be skipped"
+        )
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    warn_about_missing_production_email_configuration()
+    yield
+
+
+app = FastAPI(title="Portfolio API", version="0.1.0", lifespan=lifespan)
 
 
 @app.middleware("http")
@@ -93,19 +110,27 @@ app.include_router(admin_contact_messages.router, prefix="/api")
 app.include_router(admin_media.router, prefix="/api")
 app.include_router(admin_seo_meta.router, prefix="/api")
 app.include_router(admin_audit_logs.router, prefix="/api")
+app.include_router(admin_site_settings.router, prefix="/api")
 
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):
     try:
         db.execute(text("SELECT 1"))
-        db_status = "connected"
+        return {
+            "status": "ok",
+            "database": "connected",
+            "checked_at": datetime.now(timezone.utc).isoformat(),
+        }
     except Exception:
-        db_status = "unreachable"
-    if db_status != "connected":
-        from fastapi import HTTPException
-        raise HTTPException(status_code=503, detail={"status": "unhealthy", "database": db_status})
-    return {"status": "ok", "database": db_status}
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "unhealthy",
+                "database": "unreachable",
+                "checked_at": datetime.now(timezone.utc).isoformat(),
+            },
+        )
 
 
 @app.get("/live")

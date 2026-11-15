@@ -21,6 +21,7 @@ yarn-debug.log*
 .env
 .env.*
 !.env.example
+!.env.deployment.example
 
 # ── Vercel ──
 .vercel/
@@ -73,7 +74,8 @@ skills-lock.json
 
 # ── Documentation and planning material ──
 # Keep commits focused on files used to build, run, or deploy the application.
-Project-docs/
+Project-docs/*
+!Project-docs/DEPLOY.md
 projects-docs/
 docs/
 documentation/

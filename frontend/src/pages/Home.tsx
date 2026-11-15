@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { getBlogPosts, getHomepagePhoto, getProjects, type BlogPostListItem, type HomepagePhoto, type Project } from "../../lib/api";
+import { getBlogPosts, getHomepagePhoto, getProjects, getSiteSettings, getResumeDownloadUrl, type BlogPostListItem, type HomepagePhoto, type Project } from "../../lib/api";
 import ProjectCard from "../../components/ProjectCard";
 import PageMeta from "../PageMeta";
 
@@ -9,10 +9,16 @@ export default function Home() {
   const [posts, setPosts] = useState<BlogPostListItem[]>([]);
   const [photo, setPhoto] = useState<HomepagePhoto | null>(null);
   const [photoUnavailable, setPhotoUnavailable] = useState(false);
+  const [openToWork, setOpenToWork] = useState({ enabled: true, text: "Open to work · Backend / AI-ML Engineer · India" });
+  const [resumeAvailable, setResumeAvailable] = useState(false);
   useEffect(() => {
     getProjects().then(setProjects).catch(() => setProjects([]));
     getBlogPosts().then(setPosts).catch(() => setPosts([]));
     getHomepagePhoto().then((image) => { setPhoto(image); setPhotoUnavailable(false); }).catch(() => setPhoto(null));
+    getSiteSettings().then((settings) => {
+      setOpenToWork({ enabled: settings.open_to_work_enabled, text: settings.open_to_work_text || "Open to work · Backend / AI-ML Engineer · India" });
+      setResumeAvailable(settings.resume_available);
+    }).catch(() => undefined);
   }, []);
   const featured = projects.slice(0, 3);
   const latestPost = posts[0];
@@ -22,10 +28,22 @@ export default function Home() {
     <div className="mx-auto max-w-5xl px-6">
       <section className="grid items-center gap-12 border-b border-[var(--color-border)] pb-20 pt-16 md:grid-cols-[minmax(0,1fr)_280px] md:gap-10 md:pt-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-16">
         <div>
-          <p className="mb-4 font-mono text-sm text-[var(--color-status-live)]">Software Engineer · Backend · AI/ML</p>
+          <p className="mb-3 font-mono text-sm text-[var(--color-status-live)]">Software Engineer · Backend · AI/ML</p>
+          <div
+            className="grid transition-[grid-template-rows,opacity,padding-bottom] duration-300 motion-reduce:transition-none"
+            style={{ gridTemplateRows: openToWork.enabled ? "1fr" : "0fr", opacity: openToWork.enabled ? 1 : 0, paddingBottom: openToWork.enabled ? "1rem" : 0 }}
+            aria-hidden={!openToWork.enabled}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <p className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-1.5 font-mono text-xs leading-relaxed text-[var(--color-text)]">
+                <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-[var(--color-status-live)]" />
+                <span>{openToWork.text}</span>
+              </p>
+            </div>
+          </div>
           <h1 className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">I build useful software.<br/><span className="text-[var(--color-text-muted)]">From dependable APIs</span><br/><span className="text-[var(--color-accent)]">to intelligent applications.</span></h1>
           <p className="mt-6 max-w-xl leading-relaxed text-[var(--color-text-muted)]">I&apos;m Kamal Kishor, a software engineer with experience developing backend services and React interfaces for a multi-tenant learning platform. I enjoy solving practical problems across software, computer vision, machine learning, and connected devices—from a well-designed API to a resilient LoRa mesh network.</p>
-          <div className="mt-8 flex flex-wrap gap-4 font-mono text-sm"><Link to="/projects" className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-colors hover:opacity-90">Explore my work</Link><Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link></div>
+          <div className="mt-8 flex flex-wrap gap-4 font-mono text-sm"><Link to="/projects" className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-colors hover:opacity-90">Explore my work</Link><Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>{resumeAvailable && <a href={getResumeDownloadUrl()} className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]">Download PDF</a>}</div>
         </div>
         <div className="mx-auto w-full max-w-[280px] md:max-w-none">
           <div className="relative rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] p-2 shadow-xl shadow-black/10 transition-transform duration-300 hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none">

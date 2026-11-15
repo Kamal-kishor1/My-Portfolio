@@ -17,7 +17,7 @@ import { Skeleton } from "../Skeleton";
 
 import { Plus, FileText, Mail } from "lucide-react";
 
-export type TabId = "overview" | "projects" | "blog" | "resume" | "timeline" | "skills" | "profile" | "media" | "messages" | "seo";
+export type TabId = "overview" | "projects" | "blog" | "resume" | "timeline" | "skills" | "profile" | "media" | "messages" | "seo" | "settings";
 
 interface DashboardData {
   projects: Project[];
@@ -269,7 +269,7 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
               VIEW ALL →
             </button>
           </div>
-          <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-white/[0.08] bg-[var(--admin-surface)] shadow-sm">
+          <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-sm">
             {recentProjects.length === 0 ? (
               <EmptyBlock label="No projects yet" />
             ) : (
@@ -278,7 +278,7 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
                   <div
                     key={p.id}
                     onClick={() => onNavigate("projects")}
-                    className="flex cursor-pointer items-center border-b border-white/[0.05] px-5 py-4 transition-all duration-200 last:border-0 hover:bg-white/[0.04] hover:border-zinc-700/50"
+                    className="flex cursor-pointer items-center border-b border-[var(--admin-border)] px-5 py-4 transition-all duration-200 last:border-0 hover:border-[var(--admin-border-strong)] hover:bg-[var(--admin-surface-hover)]"
                   >
                     <div className="flex-1 min-w-0 truncate font-mono text-xs text-[var(--admin-text)]">
                       {p.title.trim()}
@@ -286,7 +286,7 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
                     <div className="shrink-0 mx-4">
                       <StatusBadge tone={p.published ? "positive" : "neutral"} label={p.published ? "published" : "draft"} />
                     </div>
-                    <div className="shrink-0 whitespace-nowrap min-w-[70px] text-right font-mono text-xs font-medium text-zinc-400">
+                    <div className="shrink-0 whitespace-nowrap min-w-[70px] text-right font-mono text-xs font-medium text-[var(--admin-text-muted)]">
                       {new Date(p.updated_at).toLocaleDateString(undefined, { month: 'numeric', day: 'numeric', year: 'numeric' })}
                     </div>
                   </div>
@@ -300,7 +300,7 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
         <div className="flex flex-col gap-8 h-full">
           <div className="flex flex-1 flex-col">
             <h2 className="mb-3 font-mono text-[11px] font-bold tracking-[0.2em] text-[var(--admin-text)]">RECENT ACTIVITY</h2>
-            <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-white/[0.08] bg-[var(--admin-surface)] shadow-sm">
+            <div className="flex flex-1 flex-col overflow-hidden rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] shadow-sm">
               {activity.length === 0 ? (
                 <EmptyBlock label="No recent activity" />
               ) : (
@@ -308,10 +308,10 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
                   {activity.map((a) => (
                     <div
                       key={a.id}
-                      className="flex items-center justify-between gap-4 border-b border-white/[0.05] px-5 py-4 font-mono text-xs transition-colors duration-200 last:border-0 hover:bg-white/[0.04]"
+                      className="flex items-center justify-between gap-4 border-b border-[var(--admin-border)] px-5 py-4 font-mono text-xs transition-colors duration-200 last:border-0 hover:bg-[var(--admin-surface-hover)]"
                     >
                       <span className="truncate text-[var(--admin-text)]">{a.label}</span>
-                      <span className="shrink-0 whitespace-nowrap font-medium text-zinc-300">
+                      <span className="shrink-0 whitespace-nowrap font-medium text-[var(--admin-text-muted)]">
                         {timeAgo(a.timestamp)}
                       </span>
                     </div>
@@ -319,13 +319,13 @@ export function OverviewTab({ onNavigate }: { onNavigate: (tab: TabId) => void }
                 </div>
               )}
             </div>
-            <p className="mt-3 font-mono text-[10px] text-zinc-500">
+            <p className="mt-3 font-mono text-[10px] text-[var(--admin-text-muted)]">
               Approximate — derived from recent update timestamps, not a real audit log.
             </p>
           </div>
 
           <div className="flex flex-col">
-            <HealthPanel className="!border-white/[0.08] shadow-sm rounded-lg" />
+            <HealthPanel className="!border-[var(--admin-border)] shadow-sm rounded-lg" />
           </div>
         </div>
 
@@ -350,12 +350,12 @@ function StatCard({
       className={`flex flex-col rounded-lg border p-6 shadow-sm transition-all duration-200 ${
         highlight 
           ? "border-[var(--admin-accent)]/40 bg-[var(--admin-accent)]/5 hover:border-[var(--admin-accent)]/60" 
-          : "border-white/[0.08] bg-[var(--admin-surface)] hover:border-white/[0.15]"
+          : "border-[var(--admin-border)] bg-[var(--admin-surface)] hover:border-[var(--admin-border-strong)]"
       }`}
     >
       <p className="font-mono text-[11px] font-bold tracking-[0.2em] text-[var(--admin-text)]/90">{label}</p>
       <p className="mt-3 font-mono text-3xl font-bold text-[var(--admin-text)]">{value}</p>
-      {sub && <p className="mt-auto pt-4 font-mono text-[10px] font-medium text-zinc-400">{sub}</p>}
+      {sub && <p className="mt-auto pt-4 font-mono text-[10px] font-medium text-[var(--admin-text-muted)]">{sub}</p>}
     </div>
   );
 }
@@ -376,7 +376,7 @@ function QuickActionCard({
   return (
     <button
       onClick={onClick}
-      className="group relative flex w-full flex-col items-start justify-center rounded-lg border border-white/[0.08] bg-[var(--admin-surface)] p-4 text-left shadow-sm transition-all duration-200 hover:border-[var(--admin-accent)]/50 hover:bg-white/[0.04] focus:outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
+      className="group relative flex w-full flex-col items-start justify-center rounded-lg border border-[var(--admin-border)] bg-[var(--admin-surface)] p-4 text-left shadow-sm transition-all duration-200 hover:border-[var(--admin-accent)]/50 hover:bg-[var(--admin-surface-hover)] focus:outline-none focus:ring-1 focus:ring-[var(--admin-accent)]"
     >
       {badge !== undefined && (
         <span className="absolute right-3 top-3 rounded-full bg-[var(--admin-accent)] px-1.5 py-0.5 font-mono text-[9px] font-semibold text-[var(--admin-bg)]">

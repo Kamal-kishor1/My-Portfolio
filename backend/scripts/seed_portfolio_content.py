@@ -14,6 +14,14 @@ from app.models.resume_entry import ResumeEntry
 
 CONTENT_PATH = Path(__file__).with_name("portfolio_content.json")
 
+# Titles used by the previous bundled résumé content. Preserve those rows when
+# updating their display titles so a content refresh does not leave duplicates.
+LEGACY_RESUME_TITLES = {
+    ("education", "B.Tech, Electronics and Communication Engineering"): "Electronics and Communication Engineering",
+    ("skill", "Generative AI & Machine Learning"): "AI, Machine Learning & Computer Vision",
+    ("skill", "Embedded Systems & Automation"): "Automation & Embedded Systems",
+}
+
 
 def seed_portfolio_content() -> dict[str, int]:
     content = json.loads(CONTENT_PATH.read_text(encoding="utf-8"))
@@ -47,11 +55,15 @@ def seed_portfolio_content() -> dict[str, int]:
             for key in ("start_date", "end_date"):
                 if values[key]:
                     values[key] = date.fromisoformat(values[key])
-            item = (
-                db.query(ResumeEntry)
-                .filter(ResumeEntry.type == values["type"], ResumeEntry.title == values["title"])
-                .one_or_none()
-            )
+            item = db.query(ResumeEntry).filter(
+                ResumeEntry.type == values["type"], ResumeEntry.title == values["title"]
+            ).one_or_none()
+            if item is None:
+                legacy_title = LEGACY_RESUME_TITLES.get((values["type"], values["title"]))
+                if legacy_title:
+                    item = db.query(ResumeEntry).filter(
+                        ResumeEntry.type == values["type"], ResumeEntry.title == legacy_title
+                    ).one_or_none()
             if item is None:
                 item = ResumeEntry(**values)
                 db.add(item)
