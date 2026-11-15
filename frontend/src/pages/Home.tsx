@@ -9,13 +9,13 @@ export default function Home() {
   const [posts, setPosts] = useState<BlogPostListItem[]>([]);
   const [photo, setPhoto] = useState<HomepagePhoto | null>(null);
   const [photoUnavailable, setPhotoUnavailable] = useState(false);
-  const [openToWork, setOpenToWork] = useState({ enabled: true, text: "Open to work · Backend / AI-ML Engineer · India (remote OK)" });
+  const [openToWork, setOpenToWork] = useState({ enabled: true, text: "Open to work · Backend / AI-ML Engineer · India" });
   useEffect(() => {
     getProjects().then(setProjects).catch(() => setProjects([]));
     getBlogPosts().then(setPosts).catch(() => setPosts([]));
     getHomepagePhoto().then((image) => { setPhoto(image); setPhotoUnavailable(false); }).catch(() => setPhoto(null));
     getSiteSettings().then((settings) => {
-      setOpenToWork({ enabled: settings.open_to_work_enabled, text: settings.open_to_work_text || "Open to work · Backend / AI-ML Engineer · India (remote OK)" });
+      setOpenToWork({ enabled: settings.open_to_work_enabled, text: settings.open_to_work_text || "Open to work · Backend / AI-ML Engineer · India" });
     }).catch(() => undefined);
   }, []);
   const featured = projects.slice(0, 3);
@@ -26,7 +26,7 @@ export default function Home() {
     <div className="mx-auto max-w-5xl px-6">
       <section className="grid items-center gap-12 border-b border-[var(--color-border)] pb-20 pt-16 md:grid-cols-[minmax(0,1fr)_280px] md:gap-10 md:pt-20 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-16">
         <div>
-          <p className="mb-4 font-mono text-sm text-[var(--color-status-live)]">Software Engineer · Backend · AI/ML</p>
+          <p className="mb-3 font-mono text-sm text-[var(--color-status-live)]">Software Engineer · Backend · AI/ML</p>
           <div
             className="grid transition-[grid-template-rows,opacity,padding-bottom] duration-300 motion-reduce:transition-none"
             style={{ gridTemplateRows: openToWork.enabled ? "1fr" : "0fr", opacity: openToWork.enabled ? 1 : 0, paddingBottom: openToWork.enabled ? "1rem" : 0 }}

@@ -326,7 +326,7 @@ def test_admin_site_settings_and_resume_media_delete_safety(client: TestClient, 
             "linkedin_url": "https://linkedin.com/in/kamal-kishor",
             "github_url": "https://github.com/Kamal-kishor1",
             "open_to_work_enabled": True,
-            "open_to_work_text": "Open to work · Backend / AI-ML Engineer · India (remote OK)",
+            "open_to_work_text": "Open to work · Backend / AI-ML Engineer · India",
             "resume_pdf_media_id": media_id,
         },
     )

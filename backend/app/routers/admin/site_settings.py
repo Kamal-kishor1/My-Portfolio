@@ -48,7 +48,7 @@ def read_settings(
         linkedin_url=values.get("linkedin_url").value if values.get("linkedin_url") else None,
         github_url=values.get("github_url").value if values.get("github_url") else None,
         open_to_work_enabled=(values.get("open_to_work_enabled").value.lower() == "true") if values.get("open_to_work_enabled") else True,
-        open_to_work_text=(values.get("open_to_work_text").value if values.get("open_to_work_text") and values.get("open_to_work_text").value else "Open to work · Backend / AI-ML Engineer · India (remote OK)"),
+        open_to_work_text=(values.get("open_to_work_text").value if values.get("open_to_work_text") and values.get("open_to_work_text").value else "Open to work · Backend / AI-ML Engineer · India"),
         resume_pdf_media_id=resume_id if resume_media and resume_media.content_type == "application/pdf" and resume_media.storage_key else None,
         resume_available=bool(resume_media and resume_media.content_type == "application/pdf" and resume_media.storage_key),
     )

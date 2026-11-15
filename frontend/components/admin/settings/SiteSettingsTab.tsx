@@ -3,7 +3,7 @@ import { getAdminSiteSettings, saveAdminSiteSettings, type AdminSiteSettingsUpda
 import { listMedia } from "@/lib/api/media";
 import type { MediaItem } from "@/types/media";
 
-const DEFAULT_OPEN_TO_WORK_TEXT = "Open to work · Backend / AI-ML Engineer · India (remote OK)";
+const DEFAULT_OPEN_TO_WORK_TEXT = "Open to work · Backend / AI-ML Engineer · India";
 
 export function SiteSettingsTab() {
   const [settings, setSettings] = useState<AdminSiteSettingsUpdate>({

@@ -42,7 +42,7 @@ def get_public_site_settings(db: Session = Depends(get_db)):
         linkedin_url=values.get("linkedin_url") or None,
         github_url=values.get("github_url") or None,
         open_to_work_enabled=(values.get("open_to_work_enabled", "true").lower() == "true"),
-        open_to_work_text=(values.get("open_to_work_text") or "").strip() or "Open to work · Backend / AI-ML Engineer · India (remote OK)",
+        open_to_work_text=(values.get("open_to_work_text") or "").strip() or "Open to work · Backend / AI-ML Engineer · India",
         resume_available=bool(resume_media and resume_media.storage_key),
     )
 
