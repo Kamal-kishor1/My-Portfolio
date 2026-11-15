@@ -31,11 +31,12 @@ class Settings(BaseSettings):
 
     # Login rate limiting enforced by slowapi.
     login_rate_limit: str = "5/minute"
-    contact_rate_limit: str = "5/hour"
+    contact_rate_limit: str = "20/hour"
     analytics_rate_limit: str = "60/minute"
     resend_api_key: SecretStr = SecretStr("")
     resend_from_email: str = ""
     contact_notification_to: str = ""
+    contact_notification_dry_run: bool = False
     trust_cloudflare_client_ip: bool = False
 
     # CORS origins supplied as a comma-separated ALLOWED_ORIGINS value.
