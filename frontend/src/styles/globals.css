@@ -28,10 +28,10 @@
 }
 
 .light {
-  --color-bg: #ffffff;
-  --color-surface: #f4f6f9;
-  --color-surface-hover: #e9ecf2;
-  --color-border: #d4dae3;
+  --color-bg: #f2f4f7;
+  --color-surface: #fafbfc;
+  --color-surface-hover: #eef1f5;
+  --color-border: #d5dbe4;
   --color-text: #1a1f2b;
   --color-text-muted: #5a6577;
   --color-accent: #3b7bec;
