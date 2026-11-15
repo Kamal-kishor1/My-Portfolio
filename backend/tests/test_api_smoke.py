@@ -411,6 +411,7 @@ def test_invalid_resend_response_does_not_lose_contact_message(client: TestClien
 def test_contact_notification_skips_when_unconfigured_and_sanitizes_subject(monkeypatch, caplog):
     from app.services import contact_notifications
 
+    monkeypatch.setattr(settings, "contact_notification_dry_run", False)
     calls = []
     monkeypatch.setattr(contact_notifications.httpx, "post", lambda *args, **kwargs: calls.append(args))
     contact_notifications.send_contact_notification("Local", "visitor@example.com", "A message")
@@ -536,7 +537,7 @@ def test_resume_pdf_upload_select_download_clear_delete_and_validation(client: T
         def delete_object(self, **kwargs):
             return None
 
-    monkeypatch.setattr(object_storage, "_client", lambda: LocalObjectStorage())
+    monkeypatch.setattr(object_storage, "_client", lambda endpoint_url=None: LocalObjectStorage())
     headers = {"Authorization": f"Bearer {login(client)}"}
     pdf_body = b"%PDF-1.7\nlocal fake PDF\n%%EOF"
     upload = client.post(
@@ -638,9 +639,10 @@ def test_contact_write_rate_limit(client: TestClient):
                 "message": f"Rate limit test message {index}",
             },
         ).status_code
-        for index in range(6)
+        for index in range(21)
     ]
-    assert 429 in statuses
+    assert statuses[:20] == [200] * 20
+    assert statuses[20] == 429
 
 
 def test_media_upload_validation_and_storage(client: TestClient, monkeypatch):

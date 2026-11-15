@@ -42,7 +42,7 @@
 * **httpOnly Secure Cookies:** Refresh tokens transported via `httpOnly`, `Secure`, `SameSite=None` cookies — immune to XSS token theft.
 * **Origin Validation:** Every auth mutation (`login`, `refresh`, `logout`) validates the `Origin` header against the `ALLOWED_ORIGINS` allowlist in production.
 * **Security Response Headers:** Every response includes `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy: camera=(), microphone=(), geolocation=()`, and `Strict-Transport-Security` (HSTS) in production.
-* **Rate Limiting (SlowAPI):** IP-based rate limiting on login (`5/minute`), contact form (`5/hour`), and analytics (`60/minute`) endpoints to prevent brute-force and abuse.
+* **Rate Limiting (SlowAPI):** IP-based rate limiting on login (`5/minute`), contact form (`20/hour` by default, configurable with `CONTACT_RATE_LIMIT`), and analytics (`60/minute`) endpoints to prevent brute-force and abuse.
 * **Role-Based Access Control (RBAC):** `admin` and `editor` roles with `require_role()` dependency injection — audit logs are admin-only.
 * **Production Config Validation:** Pydantic model validators enforce ≥32-char secrets, distinct `JWT_SECRET_KEY` / `SECRET_KEY`, HTTPS-only CORS origins, and configured object storage in production environments.
 
@@ -202,7 +202,7 @@ Each ecosystem is configured with `open-pull-requests-limit: 10` and auto-labele
 | `GET` | `/api/blog-posts/` | List all published blog posts |
 | `GET` | `/api/blog-posts/{slug}` | Get a published blog post by slug |
 | `GET` | `/api/resume/` | Get all resume entries (ordered by `sort_order`) |
-| `POST` | `/api/contact/` | Submit a contact message (rate-limited: 5/hour) |
+| `POST` | `/api/contact/` | Submit a contact message (rate-limited: 20/hour by default; configure with `CONTACT_RATE_LIMIT`) |
 | `POST` | `/api/analytics/event` | Log a page-view event (rate-limited: 60/minute) |
 | `GET` | `/api/site/homepage-photo` | Get the site-wide homepage profile photo |
 | `GET` | `/health` | Health check (database connectivity) |
