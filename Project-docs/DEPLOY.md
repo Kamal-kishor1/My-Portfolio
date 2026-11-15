@@ -2,6 +2,15 @@
 
 This guide covers the portfolio API and frontend. Do not run database migrations against production until the same migration has passed on a disposable Neon branch and a current backup is available.
 
+## Docker Compose deployment
+
+The Compose files are deliberately separate:
+
+- Development: `docker-compose.development.yml` starts PostgreSQL, Moto (local S3-compatible test storage), a bucket initializer, the API, and the frontend. Start it with `docker compose -f docker-compose.development.yml up --build`.
+- Deployment: `docker-compose.deployment.yml` starts only the API and frontend. It requires Neon PostgreSQL and Neon Object Storage values from the deployment environment; it does not start PostgreSQL or Moto. Copy `.env.deployment.example` to an ignored `.env.deployment`, populate it using your deployment secret manager, and validate with `docker compose --env-file .env.deployment -f docker-compose.deployment.yml config --quiet`.
+
+Before deployment, test migrations on a disposable Neon branch as described below. To explicitly run the migration against the configured database, use `docker compose --env-file .env.deployment -f docker-compose.deployment.yml run --rm backend alembic upgrade head`. Then start/update the services with `docker compose --env-file .env.deployment -f docker-compose.deployment.yml up -d --build`. The API startup command also runs `alembic upgrade head`, so migrations are idempotently checked again on startup. Both published ports bind to loopback by default for a host-level TLS reverse proxy; do not expose the API/frontend ports directly to the public internet. If your proxy runs in Docker, attach it to a shared private network and adjust the port/network configuration accordingly.
+
 ## 1. Validate the migration on a Neon branch
 
 1. In Neon, create a temporary branch from the intended production branch. Keep its connection strings separate from production.
@@ -27,7 +36,8 @@ Set only the variables needed by each service. Values are intentionally omitted 
 | --- | --- |
 | Backend API | `ENVIRONMENT`, `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `JWT_SECRET_KEY`, `SECRET_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ALLOWED_ORIGINS`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `AWS_PUBLIC_ENDPOINT_URL_S3` (optional), `AWS_REGION`, `NEON_STORAGE_BUCKET`, `LOGIN_RATE_LIMIT`, `CONTACT_RATE_LIMIT`, `ANALYTICS_RATE_LIMIT`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `CONTACT_NOTIFICATION_TO`, `CONTACT_NOTIFICATION_DRY_RUN`, `TRUST_CLOUDFLARE_CLIENT_IP` |
 | Frontend | `VITE_API_URL` |
-| Local Docker only | `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `API_PORT`, `FRONTEND_PORT`, `LOCAL_S3_PORT` |
+| Development Compose only | `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `API_PORT`, `FRONTEND_PORT`, `LOCAL_S3_PORT` |
+| Deployment Compose | `API_PORT`, `FRONTEND_PORT` (optional host loopback ports); all backend/frontend variables in the rows above are supplied through `.env.deployment` or the deployment secret manager |
 
 For production, set `CONTACT_NOTIFICATION_DRY_RUN=false`. Set `TRUST_CLOUDFLARE_CLIENT_IP=true` only when Cloudflare is the trusted edge and overwrites `CF-Connecting-IP`. With it off, the API uses the immediate socket peer; if every request arrives through one proxy address, all visitors share one per-IP rate-limit bucket.
 

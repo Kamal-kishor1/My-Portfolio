@@ -295,7 +295,8 @@ My-Portfolio/
 │   ├── tsconfig.json                 # Strict TypeScript with path aliases (@/*)
 │   └── package.json                  # React 19, Vite 8, Tailwind v4, Axios, etc.
 │
-├── docker-compose.yml                # Full-stack local dev: Postgres 16 + Backend + Frontend
+├── docker-compose.development.yml    # Local development: Postgres + Backend + Frontend + Moto S3
+├── docker-compose.deployment.yml     # Deployment: Backend + Frontend + external Neon services
 ├── render.yaml                       # Render Blueprint: Docker service, env vars, health checks
 ├── .env.example                      # Environment variable template (no secrets)
 ├── LICENSE                           # MIT License
@@ -323,8 +324,8 @@ cp .env.example .env
 #    JWT_SECRET_KEY=your-random-32-char-string
 #    SECRET_KEY=another-random-32-char-string
 
-# 4. Start the full stack
-docker compose up --build
+# 4. Start the local development stack (Postgres + Moto S3 + app)
+docker compose -f docker-compose.development.yml up --build
 ```
 
 | Service | URL | Health Check |
@@ -332,8 +333,11 @@ docker compose up --build
 | Frontend | [http://localhost:3001](http://localhost:3001) | `GET /healthz` |
 | Backend API | [http://localhost:8002](http://localhost:8002) | `GET /health` |
 | PostgreSQL | `localhost:5432` | `pg_isready` |
+| Local S3 (Moto) | `localhost:4566` | Used for local media uploads/downloads |
 
-The backend container runs `alembic upgrade head` on every startup — a fresh `docker compose up` on a clean database just works.
+The development backend container runs `alembic upgrade head` on every startup — a fresh Compose start on a clean local database just works. For deployment, use `docker-compose.deployment.yml` and supply a separate `.env.deployment` based on `.env.deployment.example`; that stack uses Neon PostgreSQL and Neon Object Storage and does not start a local database or Moto. See [Project-docs/DEPLOY.md](Project-docs/DEPLOY.md) for commands and migration guidance.
+
+To stop the local stack, run `docker compose -f docker-compose.development.yml down`. This preserves the local PostgreSQL volume; add `-v` only if you intentionally want to erase the local database.
 
 ### Option 2: Manual Local Setup
 
