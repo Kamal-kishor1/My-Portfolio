@@ -19,15 +19,14 @@ export default function Resume() {
       <section className="mb-12">
         <p className="mb-2 font-mono text-sm text-[var(--color-status-live)]">Experience · Education · Skills</p>
         <h1 className="mb-6 font-mono text-3xl font-semibold tracking-tight">Résumé</h1>
-        <div className="flex min-h-10 flex-wrap items-center gap-3 font-mono text-sm">
-          <Link to="/projects" className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-colors hover:opacity-90">Explore my work</Link>
-          <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
-          <a
-            href={getResumeDownloadUrl()}
-            aria-hidden={resumeAvailable !== true}
-            tabIndex={resumeAvailable === true ? 0 : -1}
-            className={`rounded-sm border border-[var(--color-border)] px-4 py-2 transition-[opacity,border-color] hover:border-[var(--color-accent)] ${resumeAvailable === true ? "opacity-100" : "pointer-events-none opacity-0"}`}
-          >Download PDF</a>
+        <div className="flex flex-wrap items-center gap-3 font-mono text-sm" aria-busy={resumeAvailable === null}>
+          {resumeAvailable === true ? <>
+            <a href={getResumeDownloadUrl()} className="rounded-sm bg-[var(--color-accent)] px-4 py-2 font-medium text-[var(--color-bg)] transition-opacity hover:opacity-90">Download PDF</a>
+            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
+          </> : resumeAvailable === false ? <>
+            <Link to="/contact" className="rounded-sm border border-[var(--color-border)] px-4 py-2 transition-colors hover:border-[var(--color-accent)]">Contact me</Link>
+            <p className="basis-full text-xs leading-relaxed text-[var(--color-text-muted)]">Résumé PDF is currently unavailable. Please contact me by email.</p>
+          </> : <span className="h-10" aria-hidden="true" />}
         </div>
       </section>
       {entries.length === 0 ? <p className="text-sm text-[var(--color-text-muted)]">Résumé details are being updated. Please check back soon.</p> : <><Section title="Experience" entries={entries.filter(e => e.type === "experience")}/><Section title="Education" entries={entries.filter(e => e.type === "education")}/><Section title="Technical Skills" entries={entries.filter(e => e.type === "skill")}/></>}
